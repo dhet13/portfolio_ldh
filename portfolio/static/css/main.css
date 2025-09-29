@@ -1,0 +1,146 @@
+/* 기본 리셋 및 폰트 설정 */
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+  }
+
+  /* 3단 레이아웃 */
+  .layout {
+      display: grid;
+      grid-template-columns: 150px 1fr 350px;
+      min-height: 100vh;
+      gap: 0;
+  }
+
+  /* 좌측 네비게이션 */
+  .left-sidebar {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+  }
+
+  /* 네비게이션 스타일 */
+  .nav-list {
+      list-style: none;
+  }
+
+  .nav-item {
+      margin-bottom: 10px;
+  }
+
+  .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 12px 16px;
+      display: block;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+  }
+
+  .nav-link:hover {
+      background-color: #34495e;
+  }
+
+  /* 메인 컨텐츠 */
+  .main-content {
+      padding: 20px 40px 40px 40px ;
+      overflow-y: auto;
+  }
+
+  /* 우측 사이드바 */
+  .right-sidebar-wrapper {
+      background: #f8f9fa;
+      padding: 20px;
+      border-left: 1px solid #dee2e6;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+  }
+
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+      .layout {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr auto;
+      }
+
+      .left-sidebar,
+      .right-sidebar-wrapper {
+          position: static;
+          height: auto;
+      }
+  }
+
+    .profile_card {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+  }
+
+  .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      object-fit: cover;
+  }
+
+  .profile-name {
+      margin-bottom: 5px;
+      font-size: 1.1em;
+      font-weight: 600;
+  }
+
+    .skills-progress {
+      margin-top: 15px;
+  }
+
+  .skill-progress-item {
+      margin-bottom: 12px;
+  }
+
+  .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 0.85em;
+  }
+
+  .skill-category {
+      font-weight: 500;
+      color: #333;
+  }
+
+  .skill-score {
+      color: #666;
+  }
+
+  .progress-bar-container {
+      height: 6px;
+      background-color: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+  }
+
+  .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #007bff,
+  #28a745);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+  }

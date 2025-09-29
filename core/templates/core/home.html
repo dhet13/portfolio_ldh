@@ -1,0 +1,69 @@
+  {% extends 'base.html' %}
+  {% block content %}
+      <!-- 메인 배너 섹션 -->
+      {% if main_content %}
+      <div class="main-section">
+          <div class="main-content">
+              <h1>{{ main_content.title }}</h1>
+              <p class="main-subtitle">{{ main_content.subtitle }}</p>
+          </div>
+      </div>
+      {% endif %}
+
+      <!-- 자기소개 섹션 -->
+  <section id="about" class="content-section">
+      {% if profile %}
+      <h2 class="section-title">자기소개</h2>
+      <div class="about-content">
+          <div class="content-wrapper">
+              <div class="about-text">
+                  <p>{{ profile.introduce }}</p>
+              </div>
+              <div class="info-boxes">
+                  <div class="profile-box">
+                      <h4>프로필 정보</h4>
+                      <p>이름: {{ profile.name }}</p>
+                      <p>영문명: {{ profile.english_name }}</p>
+                      <p>생년월일: {{ profile.birth_date }}</p>
+                      <p>이메일: {{ profile.email }}</p>      
+                      <p>연락처: {{ profile.phone }}</p>      
+                  </div>
+                  <div class="edu-box">
+                    <h4>학력</h4>
+                    {% for education in educations %}
+                        <p>학교: {{ education.school }}</p>
+                        <p>전공: {{ education.major }}</p>
+                        <p>부전공: {{ education.minor }}</p>
+                        <p>{{ education.start_date|date:"Y.m" }} ~ {{education.end_date|date:"Y.m"|default:"현재" }}</p>
+                    {% endfor %}
+                  </div>
+              </div>
+          </div>
+          {% if profile.photo %}
+          <div class="photo-wrapper">
+              <img src="{{ profile.photo.url }}"alt="프로필 사진" class="profile-photo">
+          </div>
+          {% endif %}
+      </div>
+    {% endif %}
+</section>
+<section id="skills" class="content-section">
+    <h2 class="section-title">기술 스택</h2>
+    <div class="skills-content">
+        {% regroup skills by category as skills_by_category %}
+        {% for category in skills_by_category %}
+            <div class="category-group">
+                <h3 class="category-title">{{category.grouper }}</h3>
+                <div class="skills-list">
+                    {% for skill in category.list %}        
+                    <div class="skill-item">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-level">{{ skill.level }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+  {% endblock %}

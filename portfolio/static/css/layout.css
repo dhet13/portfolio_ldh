@@ -1,0 +1,17 @@
+.laytou{
+    display: flex;
+}
+
+.left-sidebar{
+    width: 250px;
+    min-width: 250px;
+}
+
+.main-contesnt{
+    flex: 1;
+}
+
+.right-sidebar-wrapper{
+    width: 300px;
+    min-width: 300px;
+}

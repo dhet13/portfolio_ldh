@@ -1,0 +1,47 @@
+  .main-content h1 {
+      display: inline;
+      margin-right: 15px;
+  }
+
+  .main-subtitle {
+      display: inline;
+  }
+
+@media (max-width: 480px) {
+    .main-content {
+        flex-direction: column;  /* 모바일에서는 세로       
+배치 */
+        align-items: flex-start;
+    }
+}
+  
+  .about-content {
+      display: flex;
+      gap: 30px;
+  }
+
+  .left-section {
+      flex: 1;
+  }
+
+  .info-boxes {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+  }
+
+  .profile-box, .skills-box {
+      flex: 1;
+  }
+
+    .profile-photo {
+      height: 350px;  /* 기본 크기 줄임 */
+      width: auto;
+      object-fit: contain;
+  }
+
+  @media (max-width: 480px) {
+      .profile-photo {
+          height: 100px;  /* 모바일도 줄임 */
+      }
+  }
