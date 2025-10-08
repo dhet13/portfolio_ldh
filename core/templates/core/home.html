@@ -1,4 +1,6 @@
   {% extends 'base.html' %}
+  {% load markdown_extras %}
+  {% load static %}
   {% block content %}
       <!-- 메인 배너 섹션 -->
       {% if main_content %}
@@ -15,38 +17,38 @@
       {% if profile %}
       <h2 class="section-title">자기소개</h2>
       <div class="about-content">
-          <div class="content-wrapper">
-              <div class="about-text">
-                  <p>{{ profile.introduce }}</p>
-              </div>
-              <div class="info-boxes">
-                  <div class="profile-box">
-                      <h4>프로필 정보</h4>
-                      <p>이름: {{ profile.name }}</p>
-                      <p>영문명: {{ profile.english_name }}</p>
-                      <p>생년월일: {{ profile.birth_date }}</p>
-                      <p>이메일: {{ profile.email }}</p>      
-                      <p>연락처: {{ profile.phone }}</p>      
-                  </div>
-                  <div class="edu-box">
-                    <h4>학력</h4>
-                    {% for education in educations %}
-                        <p>학교: {{ education.school }}</p>
-                        <p>전공: {{ education.major }}</p>
-                        <p>부전공: {{ education.minor }}</p>
-                        <p>{{ education.start_date|date:"Y.m" }} ~ {{education.end_date|date:"Y.m"|default:"현재" }}</p>
-                    {% endfor %}
-                  </div>
-              </div>
+          <div class="about-text">
+              <p>{{ profile.introduce }}</p>
           </div>
           {% if profile.photo %}
           <div class="photo-wrapper">
-              <img src="{{ profile.photo.url }}"alt="프로필 사진" class="profile-photo">
+              <img src="{{ profile.photo.url }}" alt="프로필 사진" class="profile-photo">
           </div>
           {% endif %}
+          <div class="info-boxes">
+              <div class="profile-box">
+                  <h4>프로필 정보</h4>
+                  <p>이름: {{ profile.name }}</p>
+                  <p>영문명: {{ profile.english_name }}</p>
+                  <p>생년월일: {{ profile.birth_date }}</p>
+                  <p>이메일: {{ profile.email }}</p>
+                  <p>연락처: {{ profile.phone }}</p>
+              </div>
+              <div class="edu-box">
+                  <h4>학력</h4>
+                  {% for education in educations %}
+                      <p>학교: {{ education.school }}</p>
+                      <p>전공: {{ education.major }}</p>
+                      <p>부전공: {{ education.minor }}</p>
+                      <p>{{ education.start_date|date:"Y.m" }} ~ {{education.end_date|date:"Y.m"|default:"현재" }}</p>
+                  {% endfor %}
+              </div>
+          </div>
       </div>
     {% endif %}
 </section>
+
+<!-- 기술 섹션 -->
 <section id="skills" class="content-section">
     <h2 class="section-title">기술 스택</h2>
     <div class="skills-content">
@@ -58,7 +60,8 @@
                     {% for skill in category.list %}        
                     <div class="skill-item">
                         <span class="skill-name">{{ skill.name }}</span>
-                        <span class="skill-level">{{ skill.level }}</span>
+                        <div class="stars" style="--rating: {{ skill.level }};" aria-label="rating: {{ skill.level }} out of 5 stars">
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -66,4 +69,29 @@
         {% endfor %}
     </div>
 </section>
+
+<!-- 경력 섹션 -->
+<section id="experience" class="content-section">
+    <h2 class="section-title">경력</h2>
+    <div class="experience-container">
+        {% for exp in experiences %}
+        <div class="experience-card">
+            <div class="experience-header">
+                <h3 class="company-name"> {{ exp.company }}</h3>
+                <h4 class="position-title"> {{ exp.position }} </h4>
+            </div>
+                <p class="experience-period"> {{ exp.get_period_display }} ({{ exp.get_duration }}) </p>
+            {% if exp.is_current %}
+                <span class="current-badge"> 현재 재직중 </span>
+            {% endif %}
+            {# 상세보기를 위해 클래스 추가 #}
+            <div class="experience-description collapsible"> 
+                {{ exp.description|linebreaksbr }} 
+            </div>
+            <button class="read-more-btn">상세보기</button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+<script src="{% static 'core/js/main.js' %}"></script>
   {% endblock %}

@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5_sqri@9-5jdx)1nbom!a36xwjxg16#e)m5o*x2)9%zf9x#c02'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'ai_chat'
+    'ai_chat',
+    'projects',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +89,12 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 DATABASES = {
     'default': dj_database_url.parse(config('DATABASE_URL'))
 }
+
+# Supabase Storage 설정
+DEFAULT_FILE_STORAGE = 'portfolio.storage.SupabaseStorage'
+SUPABASE_URL = config('SUPABASE_URL')
+SUPABASE_KEY = config('SUPABASE_KEY')
+SUPABASE_BUCKET = config('SUPABASE_BUCKET', default='portfolio-media')
 
 
 # Password validation

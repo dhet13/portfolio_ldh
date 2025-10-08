@@ -59,7 +59,7 @@ class Skill(models.Model):
     class Meta:
         verbose_name = "3.기술스택"
         verbose_name_plural = "3.기술스택"
-        ordering = ["order", "name"]
+        ordering = ["order", "name", "level"]
 
     def __str__(self):
         return f"{self.name} - {self.level}"  #

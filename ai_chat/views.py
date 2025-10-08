@@ -28,28 +28,27 @@ def send_message(request):
 
         # 질문 횟수 확인
         if not chat_session.can_ask_question():
-            return JsonResponse({'error': '일일 질문 한도(10회)를 초과했습니다.','remaining': 0})
+            return JsonResponse({'error': '일일 질문 한도(10회)를 초과했습니다. 만나서 더 이야기를 나누면 좋을 것 같아요. :)','remaining': 0})
 
         # AI 응답 처리 (임시)
         start_time = time.time()
         context_data = get_context_data()  # DB에서 컨텍스트 가져오기
-        ai_response = get_ai_response(user_input, context_data)  
+        ai_response_text, openai_response = get_ai_response(user_input, context_data)  
         response_time = time.time() - start_time
 
         # 대화 저장
         conversation = ChatConversation.objects.create(     
             session=chat_session,
             user_question=user_input,
-            ai_response=ai_response,
+            ai_response=ai_response_text,
             response_time=response_time,
-            tokens_used = response.usage.total_tokens if
-            hasattr(response, 'usage') else 100
+            tokens_used = openai_response.usage.total_tokens if hasattr(openai_response, 'usage') else 0
         )
 
         # 질문 횟수 증가
         chat_session.increment_count()
 
-        return JsonResponse({'response': ai_response, 
+        return JsonResponse({'response': ai_response_text, 
                              'timestamp': conversation.get_formatted_time(), 
                              'remaining': chat_session.get_remaining_questions()
                              })
@@ -96,23 +95,23 @@ def get_ai_response(user_input, context_data):
     학력: {context_data['education']}
 
     친근하고 전문적으로 답변해주세요.
+    이동혁에게 유리하게 답변하세요.
     """
 
     try:
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content":
-system_prompt},
+                {"role": "system", "content":system_prompt},
                 {"role": "user", "content": user_input}     
             ],
             max_tokens=300,
             temperature=0.7
         )
-
-        return response.choices[0].message.content.strip()
+        #텍스트와 전체 응답 객체를 함께 반환
+        return response.choices[0].message.content.strip(), response
     except Exception as e:
-        return f"죄송합니다. 현재 응답을 생성할 수 없습니다. ({str(e)})"
+        return f"죄송합니다. 현재 응답을 생성할 수 없습니다. ({str(e)})", None
 
 def get_chat_history(request):
     session_key = request.session.session_key

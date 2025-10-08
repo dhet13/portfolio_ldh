@@ -1,0 +1,75 @@
+<!-- 프로젝트 섹션 -->
+<section id="projects" class="content-section">
+    <h2 class="section-title">프로젝트</h2>
+    <div class="projects-grid">
+        {% for project in projects %}
+        <div class="project-card" data-project-id="{{ project.id }}">
+            <!-- TODO(human): 프로젝트 썸네일 이미지 표시 영역 -->
+             <div class="project-thumbnail">
+                {% with thumbnail=project.images.all|first %}
+                    {% if thumbnail and thumbnail.image %}
+                        <img src="{{ thumbnail.image.url }}" alt="{{ project.title }} 썸네일">
+                    {% else %}
+                        <div class="thumbnail-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+             </div>
+             
+
+            <div class="project-info">
+                <h3 class="project-title">{{ project.title }}</h3>
+                <p class="project-company">{{ project.company.company }}</p>
+
+                <!-- TODO(human): 프로젝트 기간 표시 -->
+                 <p class="project-period">
+                    {{ project.start_date|date:"Y.m"}} - 
+                    {% if project.end_date %}
+                        {{ project.end_date|date:"Y.m" }}
+                    {% else %}
+                    진행중
+                    {% endif %}
+                 </p>
+
+                <!-- TODO(human): 프로젝트 설명 (truncate 사용) -->
+                 <p class="project-description">
+                    {{ project.description|truncatewords:20 }}
+
+                 </p>
+
+                <!-- TODO(human): GitHub/Demo/Figma 링크 버튼들 -->
+                 <div class="project-links">
+                    {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" class="project-link-btn github-btn"
+                        title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    {% endif %}
+                    {% if project.demo_url %}
+                        <a href="{{ project.demo_url }}" target="_blank" class="project-link-btn demo-btn"
+                        title="Demo">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    {% endif %}
+                    {% if project.figma_url %}
+                        <a href="{{ project.figma_url }}" target="_blank" class="project-link-btn figma-btn"
+                        title="Figma">
+                            <i class="fab fa-figma"></i>
+                        </a>
+                    {% endif %}
+                 </div>
+
+                <button class="project-detail-btn" data-project-id="{{ project.id }}">
+                    상세보기
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-projects">등록된 프로젝트가 없습니다.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 프로젝트 상세 모달 -->
+{% include 'projects/project_detail_modal.html' %}

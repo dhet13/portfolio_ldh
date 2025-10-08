@@ -15,33 +15,281 @@
     }
 }
   
+  /* 데스크톱: Grid 레이아웃 - 2열 3행 */
   .about-content {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto; /* 왼쪽 넓게, 오른쪽 사진 크기만큼 */
+      grid-template-rows: auto auto; /* 2행 */
       gap: 30px;
   }
 
-  .left-section {
-      flex: 1;
+  /* 자기소개 텍스트: 1행 1열 */
+  .about-text {
+      grid-column: 1;
+      grid-row: 1;
   }
 
+  /* Info 박스: 2행 1열 */
   .info-boxes {
+      grid-column: 1;
+      grid-row: 2;
       display: flex;
       gap: 15px;
-      margin-top: 20px;
+  }
+
+  /* 사진: 1~2행에 걸쳐서 2열에 위치 */
+  .photo-wrapper {
+      grid-column: 2;
+      grid-row: 1 / 3; /* 1행부터 3행 전까지 (1,2행 차지) */
+      display: flex;
+      align-items: center; /* 세로 중앙 정렬 */
   }
 
   .profile-box, .skills-box {
       flex: 1;
   }
 
-    .profile-photo {
-      height: 350px;  /* 기본 크기 줄임 */
-      width: auto;
-      object-fit: contain;
-  }
+  .profile-photo {
+    height: 350px;  /* 기본 크기 줄임 */
+    width: auto;
+    object-fit: contain;
+}
 
-  @media (max-width: 480px) {
-      .profile-photo {
-          height: 100px;  /* 모바일도 줄임 */
-      }
-  }
+@media (max-width: 480px) {
+    .profile-photo {
+        height: 100px;  /* 모바일도 줄임 */
+    }
+}
+
+.skills-content{
+  display: grid;
+  /* 화면 크기에 맞춰 카드 최소 너비 300px 유지하며 자동으로 개수 조절 */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px; /* 카드 사이의 간격 */
+}
+
+.category-group{
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.category-group:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-title{
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.skill-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.skill-item:last-child{
+  border-bottom: none;
+}
+
+
+.stars {
+/* 변수 선언 */
+  --star-color: #888787;                         /* 빈 별의 색상 */
+  --star-background: #ffc107;                 /* 채워진 별의 색상 (오타 수정됨) */
+  --percent: calc(var(--rating) / 5 * 100%);  /* HTML에서 받은 --rating 값으로 채울 비율 계산 */
+
+  /* 스타일 속성 */
+  display: inline-block;
+  font-size: 20px;
+  /* font-family: Times; 또는 다른 별 모양 폰트 */
+  line-height: 1;
+}
+
+/* 중요: 별을 실제로 화면에 그리는 부분 */
+.stars::before {
+  content: '★★★★★'; /* 화면에 별 5개를 텍스트로 그림 */
+  letter-spacing: 3px;
+  
+  /* 
+    * 계산된 비율(--percent)만큼 --star-background 색으로 
+그라데이션을 적용.
+    * 나머지는 --star-color로 채움.
+    */
+  background: linear-gradient(90deg, var(--star-background) 
+    var(--percent), var(--star-color) var(--percent));
+  
+  /* 텍스트(별) 모양으로 배경을 잘라내는 웹킷 표준 기술 */
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* =========== Experience Section =========== */
+
+/* =========== Experience Section =========== */
+.experience-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.experience-card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.experience-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.experience-header .company-name {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.experience-header .position-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: normal;
+    color: #555;
+}
+
+.experience-period {
+    color: #777;
+    font-style: italic;
+    margin: 5px 0 15px 0;
+}
+
+.current-badge {
+    display: inline-block;
+    background-color: #28a745;
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* 상세보기를 위한 스타일 */
+.experience-description {
+    color: #333;
+    line-height: 1.7;
+    transition: max-height 0.4s ease-in-out;
+    overflow: hidden;
+}
+
+/* 기본적으로 5줄만 보이도록 높이 제한 */
+.experience-description.collapsible {
+    max-height: 136px; /* 1.7 * 16px * 5 lines */
+    position: relative;
+}
+
+/* 내용이 더 있다는 것을 암시하는 그라데이션 효과 */
+.experience-description.collapsible::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    background: linear-gradient(to bottom, transparent, white);
+}
+
+/* 펼쳐졌을 때의 스타일 */
+.experience-description.expanded {
+    max-height: 1000px; /* 충분히 큰 값으로 설정 */
+}
+
+.experience-description.expanded::after {
+    display: none; /* 펼쳐졌을 때는 그라데이션 제거 */
+}
+
+.read-more-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 5px 0;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* 모바일 반응형 (768px 이하) */
+@media (max-width: 768px) {
+    /* 콘텐츠 패딩 축소 */
+    .main-content {
+        padding: 20px;
+    }
+
+    /* About 섹션 모바일: Grid를 1열로 변경 */
+    .about-content {
+        grid-template-columns: 1fr; /* 1열만 */
+        grid-template-rows: auto auto auto; /* 3행 */
+    }
+
+    /* 모바일: 자기소개 1행 */
+    .about-text {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    /* 모바일: 사진 2행 (자기소개 다음) */
+    .photo-wrapper {
+        grid-column: 1;
+        grid-row: 2;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    /* 모바일: Info 박스 3행 (사진 다음), 가로 배치 유지 */
+    .info-boxes {
+        grid-column: 1;
+        grid-row: 3;
+        flex-direction: row;
+        gap: 15px;
+    }
+
+    /* 각 박스가 동일한 너비 차지 */
+    .profile-box,
+    .edu-box {
+        flex: 1;
+        min-width: 0; /* flex 아이템이 너무 커지지 않도록 */
+    }
+
+    /* 프로필 사진 크기 */
+    .profile-photo {
+        height: 250px;
+        max-width: 100%;
+    }
+
+    /* 제목 폰트 크기 */
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    /* 경력 카드 패딩 */
+    .experience-card {
+        padding: 15px;
+    }
+
+    /* 스킬 카드 그리드 조정 */
+    .skills-content {
+        grid-template-columns: 1fr;
+    }
+}

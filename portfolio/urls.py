@@ -21,8 +21,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls'))
-
+    path('', include('core.urls')),
+    path('chat/', include('ai_chat.urls')),
+    path('projects/', include('projects.urls')), 
 ]
 
   # 개발 환경에서 미디어 파일 서빙 - 여기에 추가

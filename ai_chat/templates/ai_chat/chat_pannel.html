@@ -1,0 +1,48 @@
+{% load static %}
+
+<!-- AI 채팅 카드 -->
+<div class="ai_chat_card">
+    <!-- 채팅 헤더 -->
+    <div class="chat-header">
+    <div class="chat-title">
+        <span class="chat-icon">💬</span>
+        <h3 class="ai_chat-name">이동혁 포트폴리오 AI</h3>
+    </div>
+
+    </div>
+
+    <!-- 대화 영역 -->
+    <div class="chat-messages" id="chat-messages">
+        <div class="welcome-message">
+            <p class="greeting">안녕하세요! 이동혁에 대해 궁금한 것이 있으시면 언제든 물어보세요.</p>
+            <p class="example">💡 ex: 우리 직군은 '어떤' 직무인데 이동혁씨랑 맞을까?</p>
+                <div class="question-counter">
+                    <span class="counter-info">
+                        <span id="remaining-count">10</span>/10 질문 남음
+                    </span>
+                </div>
+        </div>
+     </div>
+
+    <!-- 입력 영역 -->
+    <div class="chat-input-area">
+    <div class="input-group">
+        <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." maxlength="200">
+        <button id="send-button" type="button">
+        <span class="send-icon">📤</span>
+        </button>
+    </div>
+    <div class="question-limit-info">
+        남은 질문 수: <span id="remaining-questions-display">10</span>회
+    </div>
+    </div>
+
+    <div class="function_explain">
+    <div class="ai_explain">
+        <p class="ai_expalin_detail">**본 채팅은 RAG기술 사용으로 포트폴리오 내 등록된 데이터베이스를 통해 답변합니다.</p>
+    </div>
+    </div>
+</div>
+
+<!-- 이 스크립트 태그를 추가 -->
+<script src="{% static 'ai_chat/js/chat.js' %}"></script>
