@@ -52,110 +52,104 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function populateModal(data) {
-        modalTitle.textContent = data.title;
-        modalCompany.textContent = data.company;
-        modalPeriod.textContent = data.period;
-        modalDescription.innerHTML = data.description; // 마크다운 HTML 지원
+    modalTitle.textContent = data.title;
+    modalCompany.textContent = data.company;
+    modalPeriod.textContent = data.period;
+    modalDescription.innerHTML = data.description; // 마크다운 HTML 지원
 
-        modalImages.innerHTML = ''; // 기존 내용 초기화
-
-        if (data.images && data.images.length > 0) {
-            //이미지가 있으면
-            data.images.forEach(img => {
-                const imgElement = document.createElement('img');
-                imgElement.src = img.url;
-                imgElement.alt = img.caption;
-                modalImages.appendChild(imgElement);
-            });
-            imagesSection.style.display = 'block'; // 섹션 표시
-        } else {
-            // 이미지가 없으면
-            imagesSection.style.display = 'none'; // 섹션 숨김
-        }
-
-        modalFiles.innerHTML = ''; //초기화
-
-        if (data.files && data.files.length > 0) {
-            const ul = document.createElement('ul');
-            data.files.forEach(file => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = file.url;
-                a.textContent = file.name;
-                a.download = file.name; // 다운로드 속성
-                li.appendChild(a);
-                ul.appendChild(li);
-            });
-            modalFiles.appendChild(ul);
-            filesSection.style.display = 'block';
-        } else {
-            filesSection.style.display = 'none';
-        }
-
-        iframeTabs.innerHTML = ''; // 기존 탭 제거
-        let isFirstTab = true;
-
-        //URL이 있으면 탭 생성
-        if (data.figma_url) {
-            const btn = document.createElement('button');
-            btn.textContent = 'Figma';
-            btn.classList.add('iframe-tab');
-            if (isFirstTab) {
-             btn.classList.add('actitve');
-             linksIframe.src = data.figma_url; // 첫 탭은 기본 로드
-             isFirstTab = false;
-            }
-            btn.addEventListener('click', () => {
-                linksIframe.src = data.figma_url;
-                document.querySelectorAll('.iframe-tab').forEach (t => t.classList.remove('acitve'));
-            });
-            iframeTabs.appendChild(btn);
-        }
-        if (data.github_url) {
-            const btn = document.createElement('button');
-            btn.textContent = 'GitHub';
-            btn.classList.add('iframe-tab');
-            if (isFirstTab) {
-             btn.classList.add('actitve');
-             linksIframe.src = data.github_url; // 첫 탭은 기본 로드
-             isFirstTab = false;
-            }
-            btn.addEventListener('click', () => {
-                linksIframe.src = data.github_url;
-                document.querySelectorAll('.iframe-tab').forEach (t => t.classList.remove('acitve'));
-            });
-            iframeTabs.appendChild(btn);
-        }
-        if (data.demo_url) {
-            const btn = document.createElement('button');
-            btn.textContent = 'Demo';
-            btn.classList.add('iframe-tab');
-            if (isFirstTab) {
-             btn.classList.add('actitve');
-             linksIframe.src = data.demo_url; // 첫 탭은 기본 로드
-             isFirstTab = false;
-            }
-            btn.addEventListener('click', () => {
-                linksIframe.src = data.demo_url;
-                document.querySelectorAll('.iframe-tab').forEach (t => t.classList.remove('acitve'));
-            });
-            iframeTabs.appendChild(btn);
-        }
-        // 탭이 하나도 없으면 iframe 섹션 전체 숨김
-        if (!isFirstTab) {
-            // 탭이 하나라도 생성됨 (isFirtsTab이 Fasle로 바뀜)
-            document.getElementById('iframe-section').style.display = 'block';
-        } else {
-            //탭이 하나도 없음
-            document.getElementById('iframe-section').style.display = 'none';
-            linksIframe.src = ''; //iframe도 비우기
-        }
+    // 1. 이미지 갤러리 처리 (data.images)
+    modalImages.innerHTML = ''; // 기존 내용 초기화
+    if (data.images && data.images.length > 0) {
+        data.images.forEach(img => {
+            const imgElement = document.createElement('img');
+            imgElement.src = img.url;
+            imgElement.alt = img.caption || data.title;
+            modalImages.appendChild(imgElement);
+        });
+        imagesSection.style.display = 'block'; // 섹션 표시
+    } else {
+        imagesSection.style.display = 'none'; // 섹션 숨김
     }
+
+    // 2. 첨부 파일 처리 (data.files) - 미리보기 기능 포함
+    modalFiles.innerHTML = ''; //초기화
+    if (data.files && data.files.length > 0) {
+        data.files.forEach(file => {
+            const fileContainer = document.createElement('div');
+            fileContainer.classList.add('file-item');
+
+            const fileTitle = document.createElement('h6');
+            fileTitle.textContent = file.title || file.name;
+            fileContainer.appendChild(fileTitle);
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = file.url;
+                img.alt = file.title;
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.marginBottom = '10px';
+                fileContainer.appendChild(img);
+            } else if (file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = file.url;
+                iframe.classList.add('pdf-preview');
+                fileContainer.appendChild(iframe);
+            }
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = file.url;
+            downloadLink.textContent = `다운로드: ${file.name}`; // 구문 오류 수정
+            downloadLink.download = file.name;
+            fileContainer.appendChild(downloadLink);
+
+            modalFiles.appendChild(fileContainer);
+        });
+        filesSection.style.display = 'block';
+    } else {
+        filesSection.style.display = 'none';
+    }
+
+    // 3. 외부 링크 탭 처리 (Figma, GitHub, Demo)
+    iframeTabs.innerHTML = ''; // 기존 탭 제거
+    let isFirstTab = true;
+
+    const createTab = (url, text) => {
+        if (!url) return;
+        const btn = document.createElement('button');
+        btn.textContent = text;
+        btn.classList.add('iframe-tab');
+        if (isFirstTab) {
+            btn.classList.add('active');
+            linksIframe.src = url;
+            isFirstTab = false;
+        }
+        btn.addEventListener('click', () => {
+            linksIframe.src = url;
+            document.querySelectorAll('.iframe-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+        });
+        iframeTabs.appendChild(btn);
+    };
+
+    createTab(data.figma_url, 'Figma');
+    createTab(data.github_url, 'GitHub');
+    createTab(data.demo_url, 'Demo');
+    
+    // 탭 유무에 따라 iframe 섹션 표시/숨김
+    if (!isFirstTab) {
+        document.getElementById('iframe-section').style.display = 'block';
+    } else {
+        document.getElementById('iframe-section').style.display = 'none';
+        linksIframe.src = '';
+    }
+}
 
     // 이벤트 리스너 등록, 모든 상세보기 버튼에 이벤트 리스너 추가
     const detailButtons = document.querySelectorAll('.project-detail-btn');
     detailButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation(); // 이벤트 버블링 방지
             const projectId = this.getAttribute('data-project-id');
             openModal(projectId);
         });

@@ -18,8 +18,8 @@ class ProjectListView(ListView):
         # 썸네일 이미지만 먼저 가져오도록 Prefectch 객체 사용
         thumbnail_images = Prefetch(
             'images',
-            queryset=ProjectImage.objects.filter(is_thumnail=True),
-            to_attr='thumnail_list'
+            queryset=ProjectImage.objects.filter(is_thumbnail=True),
+            to_attr='thumbnail_list'
         )
 
         return Project.objects.select_related('company').prefetch_related(

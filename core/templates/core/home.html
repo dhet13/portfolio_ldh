@@ -71,27 +71,30 @@
 </section>
 
 <!-- 경력 섹션 -->
+<!-- 경력 섹션 -->
 <section id="experience" class="content-section">
     <h2 class="section-title">경력</h2>
-    <div class="experience-container">
+    <div class="experience-list">
         {% for exp in experiences %}
-        <div class="experience-card">
-            <div class="experience-header">
-                <h3 class="company-name"> {{ exp.company }}</h3>
-                <h4 class="position-title"> {{ exp.position }} </h4>
+        <div class="experience-item">
+            <div class="item-summary">
+                <h4 class="company-name">{{ exp.company }}</h4>
+                <p class="position">{{ exp.position }}</p>
+                <p class="period">{{ exp.get_period_display }}</p>
+                <p class="duration">({{ exp.get_duration }})</p>
+                <button class="details-btn">상세보기</button>
             </div>
-                <p class="experience-period"> {{ exp.get_period_display }} ({{ exp.get_duration }}) </p>
-            {% if exp.is_current %}
-                <span class="current-badge"> 현재 재직중 </span>
-            {% endif %}
-            {# 상세보기를 위해 클래스 추가 #}
-            <div class="experience-description collapsible"> 
-                {{ exp.description|linebreaksbr }} 
+            <div class="item-details">
+                <h5>주요 업무</h5>
+                <p>{{ exp.description|linebreaksbr }}</p>
             </div>
-            <button class="read-more-btn">상세보기</button>
         </div>
         {% endfor %}
     </div>
 </section>
+
+<!-- 프로젝트 섹션 -->
+ {% include 'projects/project_list.html' %}
+
 <script src="{% static 'core/js/main.js' %}"></script>
   {% endblock %}

@@ -61,43 +61,58 @@
     }
 }
 
-.skills-content{
+/* ============================================
+   기술 스택 섹션 스타일 (3단 카드뷰)
+   ============================================ */
+
+.skills-content {
   display: grid;
-  /* 화면 크기에 맞춰 카드 최소 너비 300px 유지하며 자동으로 개수 조절 */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px; /* 카드 사이의 간격 */
+  grid-template-columns: repeat(3, 1fr); /* 데스크탑: 3단 고정 */
+  gap: 24px;
+  margin-top: 24px;
 }
 
-.category-group{
+.category-group {
   background-color: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 25px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
-.category-group:hover{
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+.category-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f3f4f6;
 }
 
-.category-title{
-  margin-top: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e9ecef;
+.skills-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.skill-item{
+.skill-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #f8f9fa;
+  padding: 8px 0;
 }
 
-.skill-item:last-child{
-  border-bottom: none;
+.skill-item:not(:last-child) {
+  border-bottom: 1px solid #f9fafb;
+}
+
+.skill-name {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
 }
 
 
@@ -133,101 +148,104 @@
 }
 
 
-/* =========== Experience Section =========== */
-
-/* =========== Experience Section =========== */
-.experience-container {
+/* =========== Experience Section (New Layout) =========== */
+.experience-list {
+    /* 하나의 큰 카드 컨테이너 스타일 */
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 0; /* gap 제거 - divider로 구분 */
 }
 
-.experience-card {
-    background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 25px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+.experience-item {
+    padding: 24px 0;
+    background-color: transparent; /* 카드 배경 제거 */
+    border: none; /* 개별 테두리 제거 */
+    border-radius: 0;
+    transition: all 0.3s ease-in-out;
 }
 
-.experience-header {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
+/* 회사별 구분선 (첫 번째 항목 제외) */
+.experience-item:not(:first-child) {
+    border-top: 2px solid #f3f4f6;
+    margin-top: 24px;
+    padding-top: 32px;
 }
 
-.experience-header .company-name {
-    margin: 0;
-    font-size: 1.4rem;
+/* 마지막 항목은 아래 여백 제거 */
+.experience-item:last-child {
+    padding-bottom: 0;
 }
 
-.experience-header .position-title {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: normal;
-    color: #555;
+.item-summary h4 {
+    margin-top: 0;
 }
 
-.experience-period {
-    color: #777;
-    font-style: italic;
-    margin: 5px 0 15px 0;
+.item-details {
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 16px;
 }
 
-.current-badge {
-    display: inline-block;
-    background-color: #28a745;
-    color: #fff;
-    padding: 4px 10px;
-    font-size: 0.8rem;
-    border-radius: 12px;
-    font-weight: bold;
-    margin-bottom: 15px;
+/* --- Desktop Layout (769px and above) --- */
+@media (min-width: 769px) {
+    .experience-item {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .item-summary {
+        flex: 0 0 280px; /* 좌측 요약 정보 너비 고정 */
+        position: relative;
+    }
+
+    .item-summary .details-btn {
+        display: none; /* 데스크탑에서는 상세보기 버튼 숨김 */
+    }
+
+    .item-details {
+        flex: 1; /* 나머지 공간을 모두 차지 */
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+        border-left: 1px solid #f0f0f0;
+        padding-left: 24px;
+    }
 }
 
-/* 상세보기를 위한 스타일 */
-.experience-description {
-    color: #333;
-    line-height: 1.7;
-    transition: max-height 0.4s ease-in-out;
-    overflow: hidden;
-}
+/* --- Mobile Layout (768px and below) --- */
+@media (max-width: 768px) {
+    .experience-list {
+        padding: 20px; /* 모바일에서 패딩 축소 */
+    }
 
-/* 기본적으로 5줄만 보이도록 높이 제한 */
-.experience-description.collapsible {
-    max-height: 136px; /* 1.7 * 16px * 5 lines */
-    position: relative;
-}
+    .experience-item:not(:first-child) {
+        margin-top: 20px;
+        padding-top: 24px;
+    }
 
-/* 내용이 더 있다는 것을 암시하는 그라데이션 효과 */
-.experience-description.collapsible::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3rem;
-    background: linear-gradient(to bottom, transparent, white);
-}
+    .item-details {
+        display: none; /* 모바일에서는 상세 내용 기본 숨김 */
+    }
 
-/* 펼쳐졌을 때의 스타일 */
-.experience-description.expanded {
-    max-height: 1000px; /* 충분히 큰 값으로 설정 */
-}
+    .experience-item.active .item-details {
+        display: block; /* active 클래스가 붙으면 상세 내용 표시 */
+    }
 
-.experience-description.expanded::after {
-    display: none; /* 펼쳐졌을 때는 그라데이션 제거 */
-}
-
-.read-more-btn {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    padding: 5px 0;
-    margin-top: 10px;
-    font-weight: bold;
+    .details-btn {
+        display: inline-block; /* 모바일에서만 버튼 표시 */
+        margin-top: 16px;
+        cursor: pointer;
+        background-color: #f0f0f0;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+    }
 }
 
 /* 모바일 반응형 (768px 이하) */
@@ -283,13 +301,221 @@
         font-size: 1.5rem;
     }
 
-    /* 경력 카드 패딩 */
-    .experience-card {
-        padding: 15px;
-    }
-
-    /* 스킬 카드 그리드 조정 */
+    /* 스킬 카드 그리드 조정 - 모바일: 1단 */
     .skills-content {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* 태블릿 반응형 (768px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* 스킬 카드 그리드 - 태블릿: 2단 */
+    .skills-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================
+   프로젝트 섹션 스타일
+   ============================================ */
+
+/* 프로젝트 그리드 레이아웃 */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+/* 프로젝트 카드 */
+.project-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 프로젝트 썸네일 */
+.project-thumbnail {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+}
+
+.project-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-thumbnail img {
+    transform: scale(1.1);
+}
+
+.thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 48px;
+}
+
+/* 프로젝트 정보 */
+.project-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.project-company {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 8px 0;
+}
+
+.project-period {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0 0 12px 0;
+}
+
+.project-description {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    flex: 1;
+}
+
+/* 프로젝트 링크 버튼들 */
+.project-links {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.project-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.project-link-btn:hover {
+    transform: scale(1.1);
+}
+
+.github-btn {
+    background-color: #24292e;
+}
+
+.github-btn:hover {
+    background-color: #000000;
+}
+
+.demo-btn {
+    background-color: #2563eb;
+}
+
+.demo-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.figma-btn {
+    background-color: #f24e1e;
+}
+
+.figma-btn:hover {
+    background-color: #d63f15;
+}
+
+/* 상세보기 버튼 */
+.project-detail-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.project-detail-btn:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+/* 프로젝트 없음 메시지 */
+.no-projects {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+/* 반응형: 태블릿 */
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .project-thumbnail {
+        height: 180px;
+    }
+}
+
+/* 반응형: 모바일 */
+@media (max-width: 480px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .project-thumbnail {
+        height: 160px;
+    }
+
+    .project-info {
+        padding: 16px;
+    }
+
+    .project-title {
+        font-size: 16px;
     }
 }

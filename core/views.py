@@ -1,6 +1,7 @@
   # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from .models import MainPageContent, Profile, Skill, Experience, Education
+from projects.models import Project
 
 def home(request):
     try:
@@ -13,7 +14,9 @@ def home(request):
     skills = Skill.objects.all().order_by('order')
     experiences = Experience.objects.all().order_by('-start_date')
     educations = Education.objects.all().order_by('-start_date')  # 추가     
-    skill_categories = Skill.get_category_averages() 
+    skill_categories = Skill.get_category_averages()
+
+    projects = Project.objects.select_related('company').prefetch_related('images').order_by('-start_date')[:6]
 
     context = {
         'main_content': main_content,
@@ -21,6 +24,7 @@ def home(request):
         'skills': skills,
         'experiences': experiences,
         'educations': educations,
-        'skill_categories': skill_categories,  # 추가       
+        'skill_categories': skill_categories,
+        'projects':projects,
     }
     return render(request, 'core/home.html', context) 

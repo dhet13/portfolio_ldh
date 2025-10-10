@@ -3,6 +3,7 @@ from core.models import Experience
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+import mimetypes
 
 class Project(models.Model):
     company = models.ForeignKey(
@@ -16,9 +17,9 @@ class Project(models.Model):
     description = models.TextField(verbose_name="프로젝트 설명")
     start_date = models.DateField(verbose_name="시작일")
     end_date = models.DateField(verbose_name="종료일", blank=True, null=True)
-    figma_url = models.URLField(blank=True, verbose_name="Figma URL")
-    github_url = models.URLField(blank=True, verbose_name="Github URL")
-    demo_url = models.URLField(blank=True, verbose_name="Demo URL")
+    figma_url = models.URLField(max_length=500, blank=True, verbose_name="Figma URL")
+    github_url = models.URLField(max_length=500, blank=True, verbose_name="Github URL")
+    demo_url = models.URLField(max_length=500, blank=True, verbose_name="Demo URL")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -40,7 +41,7 @@ class ProjectImage(models.Model):
     image = models.ImageField(upload_to="project/img", blank=True, null=True, 
                               verbose_name="프로젝트 이미지")
     order = models.IntegerField(default=0, verbose_name="순서")
-    is_thumnbnail = models.BooleanField (default=False, verbose_name="대표 이미지")
+    is_thumbnail = models.BooleanField(default=False, verbose_name="대표 이미지")
 
     class Meta:
         verbose_name = "프로젝트 이미지"
@@ -72,9 +73,11 @@ class ProjectFile(models.Model):
             if not self.original_filename:
                 self.original_filename = self.file.name
 
-            #확장자 추출 및 저장
-            ext = Path(self.file.name).suffix # '.pdf', 'docx' 등
-            self.file_type = ext[1:].upper() if ext else 'UNKNOWN'    
+            # MIME 타입 추출 및 저장 (수정된 부분)
+            mime_type, _= mimetypes.guess_type(self.file.name)
+            self.file_type = mime_type if mime_type else 'application/octet-stream'
+
+
         super().save(*args, **kwargs)
 
     class Meta:

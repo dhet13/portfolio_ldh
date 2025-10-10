@@ -1,30 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // 모든 상세보기 버튼 찾기
-    const readMoreButtons = document.querySelectorAll('.read-more-btn');
-    
-    readMoreButtons.forEach(button => {
-        //각 버튼 바로 위에 있는 설명 div를 찾기
-        const description = button.previousElementSibling;
+    const experienceItems = document.querySelectorAll('.experience-item');
+
+    experienceItems.forEach(item => {
+        const btn = item.querySelector('.details-btn');
         
-        if (description.scrollHeight <= 136) {// css의 max-height 값과 일치
-            button.style.display = 'none';
+        // 모바일 화면에서만 버튼에 이벤트 리스너를 추가합니다.
+        // 데스크탑에서는 이 버튼이 숨겨져 있습니다.
+        if (btn) {
+            btn.addEventListener('click', () => {
+                // 현재 클릭된 아이템의 active 상태를 토글합니다.
+                const isActive = item.classList.contains('active');
+
+                // 다른 모든 아이템의 active 상태는 제거합니다 (하나만 열리도록).
+                experienceItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                });
+
+                // 현재 아이템이 이미 active였다면 토글로 닫히게 되므로,
+                // active가 아니었을 때만 다시 active를 추가해 열린 상태를 유지합니다.
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
         }
-
-        //버튼에 클릭 이벤트 리스너 추가
-        button.addEventListener('click', () => {
-            const isCollapsed = description.classList.contains('collapsible');
-
-            // 클래스를 토글하여 css스타일 변경
-            description.classList.toggle('collapsible');
-            description.classList.toggle('expanded');
-
-            // 버튼의 텍스트를 변경합니다.
-            if (isCollapsed) {
-                button.textContent = '간략히 보기';
-            }
-            else {
-                button.textContent = '상세보기';
-            }
-        });
     });
 });

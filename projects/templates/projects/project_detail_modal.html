@@ -71,29 +71,32 @@
                 </div>
              </div>
 
-            <!-- 외부 링크 iframe 뷰어-->
-            <div class="iframe-tabs" id="iframe-tabs">
-                <!-- javascript 동적 추가
-                 <button class="iframe-tab-btn active" data-iframe-url="figma_url">
-                    <span class="material-symbols-outlined">Figma</span> Figma
-                 </button>
-                 <button class="iframe-tab-btn active" data-iframe-url="github_url">
-                    <span class="material-symbols-outlined">GitHub</span> GitHub
-                 </button>
-                 <button class="iframe-tab-btn active" data-iframe-url="demo_url">
-                    <span class="material-symbols-outlined">Demo</span> Demo
-                 </button>-->
+            <!-- 외부 링크 iframe 섹션 -->
+            <div id="iframe-section">
+                <!-- 외부 링크 iframe 뷰어-->
+                <div class="iframe-tabs" id="iframe-tabs">
+                    <!-- javascript 동적 추가
+                     <button class="iframe-tab-btn active" data-iframe-url="figma_url">
+                        <span class="material-symbols-outlined">Figma</span> Figma
+                     </button>
+                     <button class="iframe-tab-btn active" data-iframe-url="github_url">
+                        <span class="material-symbols-outlined">GitHub</span> GitHub
+                     </button>
+                     <button class="iframe-tab-btn active" data-iframe-url="demo_url">
+                        <span class="material-symbols-outlined">Demo</span> Demo
+                     </button>-->
+                </div>
+
+                <!-- iframe 컨테이너 -->
+                 <div class="iframe-wrapper">
+                    <iframe id="modal-links-iframe" src="" frameborder="0"></iframe>
+                 </div>
+
+                 <!-- 새 탭으로 열기 버튼 -->
+                  <a id="open-in-new-tab" href="" target="_blank" class="open-new-tab-btn">
+                    <span class="material-symbols-outlined">open_in_new</span> 새 탭에서 열기
+                  </a>
             </div>
-
-            <!-- iframe 컨테이너 -->
-             <div class="iframe-wrapper">
-                <iframe id="modal-links-iframe" src="" frameborder="0"></iframe>
-             </div>
-
-             <!-- 새 탭으로 열기 버튼 -->
-              <a id="open-in-new-tab" href="" target="_blank" class="open-new-tab-btn">
-                <span class="material-symbols-outlined">open_in_new</span> 새 탭에서 열기
-              </a>
         </div>
     </div>
  </div>
