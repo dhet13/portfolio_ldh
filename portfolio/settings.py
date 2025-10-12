@@ -50,6 +50,19 @@ if 'RAILWAY_ENVIRONMENT' in os.environ:
     if '.railway.app' not in str(ALLOWED_HOSTS):
         ALLOWED_HOSTS.extend(['.railway.app', '.up.railway.app'])
 
+# CSRF 설정
+CSRF_TRUSTED_ORIGINS = []
+if 'RAILWAY_ENVIRONMENT' in os.environ:
+    # Railway 도메인을 CSRF trusted origins에 추가
+    RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '')
+    if RAILWAY_PUBLIC_DOMAIN:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{RAILWAY_PUBLIC_DOMAIN}')
+    # Railway 도메인 패턴 추가
+    CSRF_TRUSTED_ORIGINS.extend([
+        'https://*.railway.app',
+        'https://*.up.railway.app'
+    ])
+
 
 # Application definition
 
