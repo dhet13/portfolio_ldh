@@ -27,29 +27,37 @@ git push -u origin main
 ### Step 2: 환경 변수 설정
 프로젝트 → **Variables** 탭에서 다음 환경 변수 추가:
 
+#### ✅ 필수 환경 변수:
 ```bash
-# Django 설정
+# Django 설정 (필수)
 SECRET_KEY=<새로운-랜덤-시크릿-키>
+DATABASE_URL=<your-supabase-or-railway-postgres-url>
 DEBUG=False
-ALLOWED_HOSTS=<your-app>.up.railway.app
 
-# Supabase 데이터베이스
-DATABASE_URL=<your-supabase-database-url>
-
-# Supabase 스토리지
-SUPABASE_URL=<your-supabase-url>
+# Supabase Storage (필수)
+SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_KEY=<your-supabase-anon-key>
 SUPABASE_BUCKET=portfolio-media
+```
 
-# API 키
+#### 🔑 선택적 환경 변수:
+```bash
+# ALLOWED_HOSTS는 자동 감지되므로 설정 불필요 (Railway 도메인 자동 추가)
+
+# AI 기능이 필요한 경우
 OPENAI_API_KEY=<your-openai-api-key>
 GOOGLE_API_KEY=<your-google-api-key>
 ```
 
-**SECRET_KEY 생성 방법:**
+**💡 SECRET_KEY 생성 방법:**
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
+
+**⚠️ 중요:**
+- `DATABASE_URL`은 Supabase PostgreSQL URL 또는 Railway Postgres 사용
+- `SUPABASE_URL`과 `SUPABASE_KEY`는 미디어 파일 저장에 필요
+- 모든 환경 변수는 Railway에서만 설정 (코드에 포함 금지)
 
 ### Step 3: 도메인 확인
 1. Railway 프로젝트 → **Settings** 탭
