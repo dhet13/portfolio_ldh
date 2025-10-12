@@ -11,5 +11,8 @@ cmds = [
 [phases.build]
 cmds = [". /opt/venv/bin/activate && python manage.py collectstatic --no-input"]
 
+[variables]
+PATH = "/opt/venv/bin:$PATH"
+
 [start]
-cmd = "/opt/venv/bin/gunicorn portfolio.wsgi:application --bind 0.0.0.0:$PORT --log-file -"
+cmd = "gunicorn portfolio.wsgi:application --bind 0.0.0.0:$PORT --log-file -"
