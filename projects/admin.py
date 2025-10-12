@@ -68,7 +68,7 @@ class ProjectAdminform(forms.ModelForm):
 class ProjectImageInline(admin.TabularInline):
     model = ProjectImage
     extra = 1
-    fields = ['image', 'image_preview', 'order', 'is_thumnbnail']
+    fields = ['image', 'image_preview', 'order', 'is_thumbnail']
     readonly_fields = ['image_preview']
 
     def image_preview(self, obj):

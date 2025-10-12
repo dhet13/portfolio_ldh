@@ -31,8 +31,7 @@
                  </p>
 
                  <p class="project-description">
-                    {{ project.description|truncatewords:20 }}
-
+                    {{ project.description|striptags|truncatewords:20 }}
                  </p>
 
                  <div class="project-links">

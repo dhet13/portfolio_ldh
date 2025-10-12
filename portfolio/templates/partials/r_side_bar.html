@@ -1,28 +1,4 @@
-<!-- r_side_bar.html -->
-  <aside class="right-sidebar">
-    <!-- 프로필 카드 -->
-    <div class="profile_card">
-      {% if profile.photo %}
-        <img src="{{ profile.photo.url }}" alt="프로필" 
-  class="profile-avatar">
-      {% endif %}
-      <h3 class="profile-name">{{ profile.name }}</h3>
-      <p class="profile-title">{{ profile.job_title|default:"PM" }}</p>       
-      <p class="profile-status">{{ profile.status|default:"Available" }}</p>
-
-      <div class="skills-progress">
-        {% for category in skill_categories %}
-          <div class="skill-progress-item">
-            <div class="skill-info">
-              <span class="skill-category">{{ category.category }}</span>     
-              <span class="skill-score">{{ category.avg_level|floatformat:1 }}/5</span>
-            </div>
-            <div class="progress-bar-container">
-              <div class="progress-bar" style="width: {% widthratio category.avg_level 5 100 %}%"></div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% include "ai_chat/chat_pannel.html" %}
-  </aside>
+﻿<!-- r_side_bar.html -->
+﻿<div class="right-sidebar">
+﻿    {% include "ai_chat/chat_pannel.html" %}
+﻿</div>

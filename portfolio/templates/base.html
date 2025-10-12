@@ -1,40 +1,35 @@
-  <!DOCTYPE html>
-  {% load static %}
-  <html lang="ko">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>{% block title %}Portfolio{% endblock %}</title>
-      <link rel="stylesheet" href="{% static 'css/main.css' %}">
-      <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-      <link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-      <link rel="stylesheet" href="{% static 'css/project-modal.css' %}">
-  </head>
-  <body>
-    <!--모바일 토큰 버튼-->
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/pavicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body class="antialiased">
     <button class="mobile-menu-toggle" aria-label="메뉴 열기">
         <span class="material-symbols-outlined">menu</span>
     </button>
     <button class="mobile-chat-toggle" aria-label="채팅 열기">
         <span class="material-symbols-outlined">support_agent</span>
     </button>
-    <!--오버레이 배경 추가-->
     <div class="overlay"></div>
-      <div class="layout">
-          <nav class="left-sidebar">
-              {% include "partials/l_side_nav.html" %}
-          </nav>
-          <main class="main-content">
-              {% block content %}{% endblock %}
-          </main>
-          <aside class="right-sidebar-wrapper">
-              {% include "partials/r_side_bar.html" %}
-          </aside>
-      </div>
-      {% include "partials/footer.html" %}
-      <script src="{% static 'js/mobile-menu.js' %}"></script>
-    <!-- 프로젝트 상세 모달 추가 -->
-     <script src="{% static 'js/project-modal.js' %}"></script>
-  </body>
-  </html>
+    <div class="layout">
+        <nav class="left-sidebar" aria-label="주요 섹션 내비게이션">
+            {% include "partials/l_side_nav.html" %}
+        </nav>
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        <aside class="right-sidebar-wrapper">
+            {% include "partials/r_side_bar.html" %}
+        </aside>
+    </div>
+    {% include "partials/footer.html" %}
+    <script src="{% static 'js/mobile-menu.js' %}"></script>
+    <script src="{% static 'js/project-modal.js' %}"></script>
+</body>
+</html>

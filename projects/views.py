@@ -4,6 +4,8 @@ from django.db.models import Prefetch
 from .models import Project, ProjectImage
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+import markdown
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 class ProjectListView(ListView):
@@ -52,10 +54,16 @@ def project_detail_json(request, pk):
         for f in project.files.all() if f.file
     ]
 
+    # Markdown을 HTML로 변환 (nl2br: 줄바꿈을 <br> 태그로 변환)
+    description_html = mark_safe(markdown.markdown(
+        project.description,
+        extensions=['fenced_code', 'tables', 'nl2br']
+    ))
+
     #응답 데이터 구성
     data = {
         'title': project.title,
-        'description': project.description,
+        'description': description_html,
         'company': project.company.company,
         'period': period,
         'demo_url': project.demo_url or '',

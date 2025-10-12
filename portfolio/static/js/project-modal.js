@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function(){
             fileTitle.textContent = file.title || file.name;
             fileContainer.appendChild(fileTitle);
 
-            if (file.type.startsWith('image/')) {
+            if (file.type && file.type.startsWith('image/')) {
                 const img = document.createElement('img');
                 img.src = file.url;
                 img.alt = file.title;
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 img.style.height = 'auto';
                 img.style.marginBottom = '10px';
                 fileContainer.appendChild(img);
-            } else if (file.type === 'application/pdf') {
+            } else if (file.type && file.type.includes('pdf')) {
                 const iframe = document.createElement('iframe');
                 iframe.src = file.url;
                 iframe.classList.add('pdf-preview');
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
             const downloadLink = document.createElement('a');
             downloadLink.href = file.url;
-            downloadLink.textContent = `다운로드: ${file.name}`; // 구문 오류 수정
+            downloadLink.textContent = `다운로드: ${file.name}`;
             downloadLink.download = file.name;
             fileContainer.appendChild(downloadLink);
 

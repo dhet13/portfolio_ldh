@@ -244,8 +244,31 @@ todo.md
 
 # Django media files (user uploads - DO NOT COMMIT)
 media/
+
 # Django static files (collectstatic output)
 staticfiles/
 static_root/
 
-.env.example
+# Django cache
+*.pyc
+__pycache__/
+*.py[cod]
+.django_cache/
+
+# Railway specific
+.railway/
+
+# Vercel specific (if using)
+.vercel
+
+# Tailwind CSS compiled files
+theme/static_src/node_modules/
+theme/static/css/dist/
+
+# Database backups
+*.dump
+*.sql
+*.sqlite
+
+# Local configuration (commit .env.example but not .env)
+# .env is already ignored above at line 138

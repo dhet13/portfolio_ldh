@@ -1,102 +1,40 @@
-<!-- 프로젝트 상세 모달 -->
- <div class="modal-overlay" id="projectDetailModal" style="display: none;">
+﻿<!-- 프로젝트 상세 모달 -->
+<div class="modal-overlay" id="projectDetailModal" style="display: none;">
     <div class="modal-container">
-        <!-- 모달 헤더 -->
         <div class="modal-header">
             <h2 class="modal-title" id="modal-title"></h2>
-            <button class="modal-close" aria-label="닫기">
+            <button class="modal-close" aria-label="모달 닫기">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-
-        <!-- 모달 바디-->
         <div class="modal-body">
-            <!-- 프로젝트 메타 정보 -->
             <div class="project-meta">
                 <p><strong>회사:</strong> <span id="modal-company"></span></p>
                 <p><strong>기간:</strong> <span id="modal-period"></span></p>
             </div>
-
-            <!-- 프로젝트 설명 -->
-             <div class="modal-section">
+            <div class="modal-section">
                 <h3>프로젝트 설명</h3>
                 <div id="modal-description"></div>
-             </div>
-
-             <!--프로젝트 이미지-->
-             <div class="modal-section" id="modal-images-section" style="display: none;">
+            </div>
+            <div class="modal-section" id="modal-images-section" style="display: none;">
                 <h3>프로젝트 이미지</h3>
-                <div class="image-gallery" id="modal-images">
-                    <!--이미지 동적 추가-->
+                <div class="image-gallery" id="modal-images"></div>
+            </div>
+            <div class="modal-section" id="iframe-section" style="display: none;">
+                <h3>외부 링크</h3>
+                <div class="iframe-tabs" id="iframe-tabs"></div>
+                <div class="iframe-wrapper">
+                    <iframe id="modal-links-iframe" src="" frameborder="0" title="프로젝트 링크 미리보기"></iframe>
                 </div>
-             </div>
-
-             <div class="modal-section" id="modal-files-section" style="display: none;">
-                <h3>관련 파일</h3>
-                <ul class="file-list" id="modal-files">
-                    <!--파일 목록 동적 추가-->
-                    <li class="file-item">
-                        <div class="file-info">
-                            <span class="material-symbols-outlined file-icon">description</span>
-                            <span class="file-name">파일명.pdf</span>
-                            <span class="file-type">PDF</span>
-                        </div>
-                        <div class="file-actions">
-                            <button class="file-preview-btn" data-file-url="url" data-file-type="pdf">
-                                <span class="material-symbols-outlined">visibility</span>미리보기
-                            </button>
-                            <a href="file.url" download class="file-download-btn">
-                                <span class="material-symbols-outlined">download</span>다운로드
-                            </a>
-                        </div>
-                    </li> -->
-                </ul>
-             </div>
-
-             <!--파일 미리보기 모달-->
-             <div class="file-preview-overlay" id="filePreviewModal" style="display: none;">
-                <div class="file-preview-container">
-                    <div class="file-preview-header">
-                        <h3 id="preview-file-name"></h3>
-                        <button class="preview-close" aria-label="닫기">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    </div>
-                    <div class="file-preview-body" id="file-preview-content">
-                        <!--파일 타입별 동적 삽입
-                        PDF: <embed src="file.url" type="application/pdf">
-                        이미지: <img src="file.url">
-                        문서: Google Docs Viewer iframe-->     
-                    </div>
-                </div>
-             </div>
-
-            <!-- 외부 링크 iframe 섹션 -->
-            <div id="iframe-section">
-                <!-- 외부 링크 iframe 뷰어-->
-                <div class="iframe-tabs" id="iframe-tabs">
-                    <!-- javascript 동적 추가
-                     <button class="iframe-tab-btn active" data-iframe-url="figma_url">
-                        <span class="material-symbols-outlined">Figma</span> Figma
-                     </button>
-                     <button class="iframe-tab-btn active" data-iframe-url="github_url">
-                        <span class="material-symbols-outlined">GitHub</span> GitHub
-                     </button>
-                     <button class="iframe-tab-btn active" data-iframe-url="demo_url">
-                        <span class="material-symbols-outlined">Demo</span> Demo
-                     </button>-->
-                </div>
-
-                <!-- iframe 컨테이너 -->
-                 <div class="iframe-wrapper">
-                    <iframe id="modal-links-iframe" src="" frameborder="0"></iframe>
-                 </div>
-
-                 <!-- 새 탭으로 열기 버튼 -->
-                  <a id="open-in-new-tab" href="" target="_blank" class="open-new-tab-btn">
-                    <span class="material-symbols-outlined">open_in_new</span> 새 탭에서 열기
-                  </a>
+                <a id="open-in-new-tab" href="" target="_blank" class="open-new-tab-btn">
+                    <span class="material-symbols-outlined">open_in_new</span>
+                    새 탭에서 열기
+                </a>
+            </div>
+            <div class="modal-section" id="modal-files-section" style="display: none;">
+                <h3>관련 자료</h3>
+                <div id="modal-files" class="flex flex-col gap-4"></div>
             </div>
         </div>
     </div>
- </div>
+</div>

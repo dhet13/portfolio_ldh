@@ -79,7 +79,8 @@ class Experience(models.Model):
     position = models.CharField(max_length=100, verbose_name="직책")
     start_date = models.DateField(verbose_name="시작일")
     end_date = models.DateField(blank=True, null=True, verbose_name="종료일")
-    description = models.TextField(verbose_name="회사 및 업무 내용")
+    company_intro = models.TextField(verbose_name="회사 소개", blank=True, help_text="회사에 대한 간략한 소개를 입력합니다.")
+    description = models.TextField(verbose_name="주요 업무")
     is_current = models.BooleanField(default=False, verbose_name="현재 재직중")
 
     def get_duration(self):
