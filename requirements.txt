@@ -11,3 +11,4 @@ python-dateutil
 markdown
 django-tailwind
 django-browser-reload
+Pillow
