@@ -9,3 +9,5 @@ openai
 supabase
 python-dateutil
 markdown
+django-tailwind
+django-browser-reload
