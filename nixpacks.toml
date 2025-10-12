@@ -1,11 +1,15 @@
 [phases.setup]
 nixPkgs = ["python311", "postgresql"]
+aptPkgs = ["python3-pip"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+  "python3.11 -m pip install --upgrade pip",
+  "python3.11 -m pip install -r requirements.txt"
+]
 
 [phases.build]
-cmds = ["python manage.py collectstatic --no-input"]
+cmds = ["python3.11 manage.py collectstatic --no-input"]
 
 [start]
-cmd = "gunicorn portfolio.wsgi:application --bind 0.0.0.0:$PORT --log-file -"
+cmd = "python3.11 -m gunicorn portfolio.wsgi:application --bind 0.0.0.0:$PORT --log-file -"
