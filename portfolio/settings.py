@@ -130,39 +130,24 @@ DATABASES = {
     )
 }
 
-# django-storages 및 Supabase S3 설정
+# Supabase Storage 설정 (커스텀 백엔드 사용)
 # ------------------------------------------------------------------------------
 # 참고: 이 설정을 위해 Railway 환경 변수에 다음이 필요합니다:
 # SUPABASE_URL: Supabase 프로젝트 URL (예: https://xxxxx.supabase.co)
 # SUPABASE_KEY: Supabase의 service_role 키 (Settings > API > service_role key)
 # SUPABASE_BUCKET: 'portfolio-media' (버킷명)
 
-INSTALLED_APPS.append('storages')
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-# Supabase S3 호환 API 설정
+# Supabase 설정
 SUPABASE_URL = config('SUPABASE_URL', default='')
-SUPABASE_PROJECT_ID = SUPABASE_URL.replace('https://', '').replace('.supabase.co', '') if SUPABASE_URL else ''
+SUPABASE_KEY = config('SUPABASE_KEY', default='')
+SUPABASE_BUCKET = config('SUPABASE_BUCKET', default='portfolio-media')
 
-# S3Boto3Storage 설정
-AWS_ACCESS_KEY_ID = SUPABASE_PROJECT_ID  # Supabase Project ID
-AWS_SECRET_ACCESS_KEY = config('SUPABASE_KEY', default='')  # service_role 키
-AWS_STORAGE_BUCKET_NAME = config('SUPABASE_BUCKET', default='portfolio-media')
-
-# 올바른 Supabase S3 호환 엔드포인트
-AWS_S3_ENDPOINT_URL = f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3"
-AWS_S3_REGION_NAME = 'ap-northeast-2'  # Supabase 리전
-
-# S3 관련 추가 설정
-AWS_S3_FILE_OVERWRITE = False
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_ADDRESSING_STYLE = 'path'  # Supabase는 path-style 주소 사용
-AWS_DEFAULT_ACL = None  # Supabase는 버킷 정책으로 권한 관리
-AWS_QUERYSTRING_AUTH = False  # 공개 URL 사용
+# 커스텀 Supabase Storage Backend 사용
+DEFAULT_FILE_STORAGE = 'portfolio.storage_backends.SupabaseStorage'
 
 # MEDIA_URL 설정 - Supabase 공개 URL 구조
-MEDIA_URL = f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}/"
+SUPABASE_PROJECT_ID = SUPABASE_URL.replace('https://', '').replace('.supabase.co', '') if SUPABASE_URL else ''
+MEDIA_URL = f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/"
 
 
 # Password validation
