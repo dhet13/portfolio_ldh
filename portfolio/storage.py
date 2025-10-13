@@ -25,39 +25,50 @@ class SupabaseStorage(Storage):
         self.bucket = settings.SUPABASE_BUCKET
 
     def _save(self, name, content):
-        from io import BytesIO
+        import io
+        import logging
+        import uuid
+        import os
 
-        # 파일 포인터를 처음으로 되돌립니다.
+        logger = logging.getLogger(__name__)
+
         content.seek(0)
-
-        # 파일 확장자 추출
         ext = os.path.splitext(name)[1].lower()
-
-        # UUID로 고유한 파일명 생성
         unique_name = f"{uuid.uuid4().hex}{ext}"
 
-        # 디렉토리 경로 유지
         directory = os.path.dirname(name)
-        if directory:
-            full_path = os.path.join(directory, unique_name).replace('\\', '/')
-        else:
-            full_path = unique_name
+        full_path = os.path.join(directory, unique_name).replace('\\', '/') if directory else unique_name
 
-        # 파일을 청크 단위로 안전하게 읽어 메모리 버퍼에 씁니다.
-        file_buffer = BytesIO()
-        for chunk in content.chunks():
-            file_buffer.write(chunk)
-        file_buffer.seek(0)
-        file_data = file_buffer.getvalue()
+        file_data = content.read()
+        file_obj = io.BytesIO(file_data)
 
-        # Supabase에 업로드
-        self.client.storage.from_(self.bucket).upload(
-            path=full_path,
-            file=file_data,
-            file_options={"upsert": "true"}
-        )
+        try:
+            res = self.client.storage.from_(self.bucket).upload(
+                path=full_path,
+                file=file_obj,
+                file_options={"upsert": True}
+            )
+        except Exception as e:
+            logger.exception("Supabase upload exception for %s: %s", full_path, e)
+            raise
 
-        # 업로드된 최종 경로 반환
+        # supabase-py v1 did not have a dedicated error class, check for dict response
+        if (isinstance(res, dict) and res.get("error")):
+            logger.error("Upload failed for %s: %s", full_path, res)
+            raise Exception(f"Upload failed: {res}")
+
+        # Verification step
+        try:
+            items = self.client.storage.from_(self.bucket).list(path=os.path.dirname(full_path) or '')
+            if not any(item['name'] == os.path.basename(full_path) for item in items):
+                logger.error("Uploaded file not found in list after upload: %s", full_path)
+                raise Exception("Upload reported success but file not found")
+        except Exception as e:
+            logger.exception("Error verifying uploaded file: %s", e)
+            # Depending on policy, you might want to raise the exception
+            # or just log the verification failure and continue.
+            raise
+
         return full_path
 
     def _open(self, name, mode='rb'):
