@@ -5,11 +5,14 @@ Supabase Python SDK를 사용하여 파일 업로드/다운로드 처리
 from django.core.files.storage import Storage
 from django.conf import settings
 from django.utils.deconstruct import deconstructible
+from django.utils.encoding import filepath_to_uri
 from supabase import create_client, Client
 from io import BytesIO
 import os
 import mimetypes
-from urllib.parse import urljoin
+import uuid
+from datetime import datetime
+from urllib.parse import urljoin, quote
 
 
 @deconstructible
@@ -28,6 +31,39 @@ class SupabaseStorage(Storage):
         """Supabase Storage 클라이언트 반환"""
         return self.client.storage.from_(self.bucket_name)
 
+    def _sanitize_filename(self, name):
+        """
+        한글 및 특수문자 파일명을 안전한 ASCII 파일명으로 변환
+        예: test/한글파일.jpg -> test/20250113_a1b2c3d4.jpg
+        """
+        # 디렉토리와 파일명 분리
+        directory = os.path.dirname(name)
+        filename = os.path.basename(name)
+
+        # 파일명과 확장자 분리
+        name_part, ext = os.path.splitext(filename)
+
+        # ASCII가 아닌 문자가 있는지 확인
+        try:
+            name_part.encode('ascii')
+            # ASCII만 있으면 원본 파일명 유지
+            has_non_ascii = False
+        except UnicodeEncodeError:
+            has_non_ascii = True
+
+        # 한글이나 특수문자가 있으면 타임스탬프 + UUID로 변환
+        if has_non_ascii:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            unique_id = uuid.uuid4().hex[:8]
+            safe_filename = f"{timestamp}_{unique_id}{ext}"
+        else:
+            safe_filename = filename
+
+        # 디렉토리와 결합
+        if directory:
+            return os.path.join(directory, safe_filename).replace('\\', '/')
+        return safe_filename
+
     def _open(self, name, mode='rb'):
         """
         파일을 열어서 반환
@@ -43,9 +79,13 @@ class SupabaseStorage(Storage):
     def _save(self, name, content):
         """
         파일을 Supabase Storage에 저장
+        한글 파일명은 자동으로 안전한 ASCII 파일명으로 변환됩니다.
         """
         try:
             storage = self._get_storage_client()
+
+            # 한글 파일명을 안전한 파일명으로 변환
+            safe_name = self._sanitize_filename(name)
 
             # content가 InMemoryUploadedFile이나 TemporaryUploadedFile인 경우
             if hasattr(content, 'read'):
@@ -53,19 +93,20 @@ class SupabaseStorage(Storage):
             else:
                 file_data = content
 
-            # MIME 타입 추정
+            # MIME 타입 추정 (원본 파일명 기준)
             content_type, _ = mimetypes.guess_type(name)
             if not content_type:
                 content_type = 'application/octet-stream'
 
-            # Supabase Storage에 업로드
+            # Supabase Storage에 업로드 (변환된 파일명 사용)
             storage.upload(
-                path=name,
+                path=safe_name,
                 file=file_data,
                 file_options={"content-type": content_type}
             )
 
-            return name
+            # 변환된 파일명 반환 (Django가 DB에 저장할 경로)
+            return safe_name
 
         except Exception as e:
             raise IOError(f"파일 저장 실패: {name}. 에러: {str(e)}")
@@ -134,11 +175,12 @@ class SupabaseStorage(Storage):
 
     def url(self, name):
         """
-        파일의 공개 URL 반환
+        파일의 공개 URL 반환 (한글 파일명 지원)
         """
+        # 한글 파일명을 URL 인코딩
+        encoded_name = quote(name, safe='/')
         # Public bucket의 경우 공개 URL 생성
-        base_url = f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/"
-        return urljoin(base_url, name)
+        return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{encoded_name}"
 
     def get_accessed_time(self, name):
         """
