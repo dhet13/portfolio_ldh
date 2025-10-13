@@ -34,18 +34,25 @@ class SupabaseStorage(Storage):
         # UUID로 고유한 파일명 생성 (한글 파일명 문제 해결)
         unique_name = f"{uuid.uuid4().hex}{ext}"
 
+        # 디렉토리 경로를 유지하면서 UUID 파일명과 결합
+        directory = os.path.dirname(name)
+        if directory:
+            full_path = os.path.join(directory, unique_name).replace('\\', '/')
+        else:
+            full_path = unique_name
+
         # content.read()로 바이트 데이터 읽기
         file_data = content.read()
 
         # self.client.storage.from_(self.bucket).upload() 호출
         response = self.client.storage.from_(self.bucket).upload(
-            path=unique_name,
+            path=full_path,
             file=file_data,
             file_options={"upsert": "true"}
         )
 
         # 업로드한 경로 (path) 반환
-        return unique_name
+        return full_path
 
     def _open(self, name, mode='rb'):
         # Supabase에서 파일 다운로드하여 파일 객체 반환
