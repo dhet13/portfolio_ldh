@@ -135,13 +135,16 @@ SUPABASE_URL = config('SUPABASE_URL', default='')
 SUPABASE_KEY = config('SUPABASE_KEY', default='')
 SUPABASE_BUCKET = config('SUPABASE_BUCKET', default='portfolio-media')
 
-# Supabase가 설정되어 있을 때만 커스텀 스토리지 사용
-if SUPABASE_URL and SUPABASE_KEY:
-    DEFAULT_FILE_STORAGE = 'portfolio.storage.SupabaseStorage'
-else:
-    # 로컬 또는 Supabase 없는 환경에서는 기본 파일 스토리지 사용
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
+# 항상 Supabase 스토리지를 사용하도록 설정합니다.
+# 로컬 개발 환경에서도 Supabase에 연결해야 합니다.
+# 만약 SUPABASE_URL, SUPABASE_KEY 환경변수가 없으면,
+# portfolio.storage.SupabaseStorage 초기화 시 에러가 발생합니다.
+DEFAULT_FILE_STORAGE = 'portfolio.storage.SupabaseStorage'
+
+# MEDIA_URL과 MEDIA_ROOT는 SupabaseStorage가 자체적으로 관리하므로
+# Django 설정에서는 큰 의미가 없습니다.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' # 임시 또는 로컬 테스트용으로 남겨둘 수 있음
 
 
 # Password validation
