@@ -130,21 +130,32 @@ DATABASES = {
     )
 }
 
-# Supabase Storage 설정
-SUPABASE_URL = config('SUPABASE_URL', default='')
-SUPABASE_KEY = config('SUPABASE_KEY', default='')
-SUPABASE_BUCKET = config('SUPABASE_BUCKET', default='portfolio-media')
+# django-storages 및 Supabase S3 설정
+# ------------------------------------------------------------------------------
+# 참고: 이 설정을 위해 Railway 환경 변수에 다음이 필요합니다:
+# SUPABASE_PROJECT_ID: Supabase 대시보드의 Project ID (예: rpbjeztxfmzneeoqlatn)
+# SUPABASE_KEY: Supabase의 service_role 키
+# SUPABASE_BUCKET: 'portfolio-media'
 
-# 항상 Supabase 스토리지를 사용하도록 설정합니다.
-# 로컬 개발 환경에서도 Supabase에 연결해야 합니다.
-# 만약 SUPABASE_URL, SUPABASE_KEY 환경변수가 없으면,
-# portfolio.storage.SupabaseStorage 초기화 시 에러가 발생합니다.
-DEFAULT_FILE_STORAGE = 'portfolio.storage.SupabaseStorage'
+INSTALLED_APPS.append('storages')
 
-# MEDIA_URL과 MEDIA_ROOT는 SupabaseStorage가 자체적으로 관리하므로
-# Django 설정에서는 큰 의미가 없습니다.
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' # 임시 또는 로컬 테스트용으로 남겨둘 수 있음
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# S3Boto3Storage 설정
+AWS_S3_FILE_OVERWRITE = False  # 동일한 이름의 파일이 업로드될 경우 덮어쓰지 않고, Django 기본 방식처럼 이름 뒤에 랜덤 문자열을 추가합니다.
+AWS_DEFAULT_ACL = 'public-read' # 파일이 기본적으로 공개 읽기 가능하도록 설정합니다.
+
+# Supabase S3 호환 스토리지 접속 정보
+# AWS_ACCESS_KEY_ID는 Supabase의 Project ID를 사용합니다.
+AWS_ACCESS_KEY_ID = config('SUPABASE_PROJECT_ID', default='')
+# AWS_SECRET_ACCESS_KEY는 Supabase의 service_role 키를 사용합니다.
+AWS_SECRET_ACCESS_KEY = config('SUPABASE_KEY', default='') # 기존 SUPABASE_KEY가 service_role 키여야 합니다.
+AWS_STORAGE_BUCKET_NAME = config('SUPABASE_BUCKET', default='portfolio-media')
+AWS_S3_ENDPOINT_URL = f"https://{config('SUPABASE_PROJECT_ID', default='')}.supabase.co/storage/v1"
+AWS_S3_REGION_NAME = 'ap-northeast-2' # Supabase 프로젝트 리전 (예: ap-northeast-2)
+
+# MEDIA_URL 설정 (django-storages가 URL을 생성하지만, 일부 경우에 대비해 설정)
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
 
 
 # Password validation
