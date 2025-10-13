@@ -9,7 +9,8 @@ class Command(BaseCommand):
     help = 'Re-upload all images from local media folder to Supabase with correct paths'
 
     def handle(self, *args, **options):
-        base_dir = Path(__file__).resolve().parent.parent.parent.parent.parent
+        from django.conf import settings
+        base_dir = settings.BASE_DIR
         media_dir = base_dir / 'media'
 
         if not media_dir.exists():
