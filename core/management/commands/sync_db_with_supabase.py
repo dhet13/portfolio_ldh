@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
         # Update Profile photos
         self.stdout.write('\n=== Updating Profile Photos ===')
-        profiles = Profile.objects.filter(photo__isnull=False)
+        profiles = Profile.objects.all()  # Get ALL profiles, even with empty photo
 
         for profile in profiles:
             old_path = str(profile.photo.name)
@@ -58,7 +58,7 @@ class Command(BaseCommand):
 
         # Update MainPageContent banners
         self.stdout.write('\n=== Updating Main Banners ===')
-        contents = MainPageContent.objects.filter(main_banner__isnull=False)
+        contents = MainPageContent.objects.all()  # Get ALL contents
 
         for content in contents:
             old_path = str(content.main_banner.name)
@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
         # Update ProjectImage
         self.stdout.write('\n=== Updating Project Images ===')
-        images = ProjectImage.objects.filter(image__isnull=False)
+        images = ProjectImage.objects.all()  # Get ALL images
 
         for img in images:
             old_path = str(img.image.name)
