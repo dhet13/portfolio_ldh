@@ -25,8 +25,8 @@ class SupabaseStorage(Storage):
         self.bucket = settings.SUPABASE_BUCKET
 
     def _save(self, name, content):
-        # 파일 업로드 로직
-        # Supabase Storage 파일업로드
+        # 파일 포인터를 처음으로 되돌려, 업로드된 파일 내용을 안정적으로 읽도록 보장합니다.
+        content.seek(0)
 
         # 파일 확장자 추출
         ext = os.path.splitext(name)[1].lower()
