@@ -133,29 +133,36 @@ DATABASES = {
 # django-storages 및 Supabase S3 설정
 # ------------------------------------------------------------------------------
 # 참고: 이 설정을 위해 Railway 환경 변수에 다음이 필요합니다:
-# SUPABASE_PROJECT_ID: Supabase 대시보드의 Project ID (예: rpbjeztxfmzneeoqlatn)
-# SUPABASE_KEY: Supabase의 service_role 키
-# SUPABASE_BUCKET: 'portfolio-media'
+# SUPABASE_URL: Supabase 프로젝트 URL (예: https://xxxxx.supabase.co)
+# SUPABASE_KEY: Supabase의 service_role 키 (Settings > API > service_role key)
+# SUPABASE_BUCKET: 'portfolio-media' (버킷명)
 
 INSTALLED_APPS.append('storages')
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+# Supabase S3 호환 API 설정
+SUPABASE_URL = config('SUPABASE_URL', default='')
+SUPABASE_PROJECT_ID = SUPABASE_URL.replace('https://', '').replace('.supabase.co', '') if SUPABASE_URL else ''
+
 # S3Boto3Storage 설정
-AWS_S3_FILE_OVERWRITE = False  # 동일한 이름의 파일이 업로드될 경우 덮어쓰지 않고, Django 기본 방식처럼 이름 뒤에 랜덤 문자열을 추가합니다.
-AWS_DEFAULT_ACL = 'public-read' # 파일이 기본적으로 공개 읽기 가능하도록 설정합니다.
-
-# Supabase S3 호환 스토리지 접속 정보
-# AWS_ACCESS_KEY_ID는 Supabase의 Project ID를 사용합니다.
-AWS_ACCESS_KEY_ID = config('SUPABASE_PROJECT_ID', default='')
-# AWS_SECRET_ACCESS_KEY는 Supabase의 service_role 키를 사용합니다.
-AWS_SECRET_ACCESS_KEY = config('SUPABASE_KEY', default='') # 기존 SUPABASE_KEY가 service_role 키여야 합니다.
+AWS_ACCESS_KEY_ID = SUPABASE_PROJECT_ID  # Supabase Project ID
+AWS_SECRET_ACCESS_KEY = config('SUPABASE_KEY', default='')  # service_role 키
 AWS_STORAGE_BUCKET_NAME = config('SUPABASE_BUCKET', default='portfolio-media')
-AWS_S3_ENDPOINT_URL = f"https://{config('SUPABASE_PROJECT_ID', default='')}.supabase.co/storage/v1"
-AWS_S3_REGION_NAME = 'ap-northeast-2' # Supabase 프로젝트 리전 (예: ap-northeast-2)
 
-# MEDIA_URL 설정 (django-storages가 URL을 생성하지만, 일부 경우에 대비해 설정)
-MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
+# 올바른 Supabase S3 호환 엔드포인트
+AWS_S3_ENDPOINT_URL = f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3"
+AWS_S3_REGION_NAME = 'ap-northeast-2'  # Supabase 리전
+
+# S3 관련 추가 설정
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_ADDRESSING_STYLE = 'path'  # Supabase는 path-style 주소 사용
+AWS_DEFAULT_ACL = None  # Supabase는 버킷 정책으로 권한 관리
+AWS_QUERYSTRING_AUTH = False  # 공개 URL 사용
+
+# MEDIA_URL 설정 - Supabase 공개 URL 구조
+MEDIA_URL = f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}/"
 
 
 # Password validation
