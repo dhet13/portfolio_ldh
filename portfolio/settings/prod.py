@@ -18,7 +18,6 @@ if 'RAILWAY_ENVIRONMENT' in os.environ:
     
     # Add wildcards for Railway's domains to be safe
     ALLOWED_HOSTS.extend([
-        'portfolio-ldh.up.railway.app', # Explicitly add current domain for stability
         '.railway.app',
         '.up.railway.app',
     ])
@@ -46,7 +45,7 @@ DATABASES = {
 }
 
 # WhiteNoise 정적 파일 압축 및 캐싱
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # 보안 설정
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
