@@ -515,18 +515,22 @@
     padding: 1.5rem;
     box-shadow: none;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    height: 225px;
+    flex-direction: row; /* Changed to row */
+    align-items: flex-start; /* Align to top */
+    gap: 1.5rem;
+    height: auto; /* Adjust height for content */
   }
 
   .category-title {
     font-size: 1.125rem;
     font-weight: 600;
-    padding-bottom: 0.75rem;
     margin: 0;
-    border-bottom: 1px solid hsl(var(--border));
     color: hsl(var(--card-foreground));
+    width: 100px; /* Give title a fixed width */
+    flex-shrink: 0; /* Prevent shrinking */
+    border-right: 1px solid hsl(var(--border)); /* Change to right border */
+    padding-right: 1.5rem;
+    height: 100%;
   }
 
   .skills-list {

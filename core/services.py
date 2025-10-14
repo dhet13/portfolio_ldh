@@ -96,10 +96,27 @@ def get_portfolio_context() -> dict:
         profile = None
 
     # 관련 데이터 조회
-    skills = Skill.objects.all().order_by('order')
     experiences = Experience.objects.all().order_by('-start_date')
     educations = Education.objects.all().order_by('-start_date')
-    skill_categories = Skill.get_category_averages()
+    
+    # Skill 데이터를 카테고리별로 그룹화하고 평균 계산
+    skills = Skill.objects.all().order_by('category', 'order')
+    category_averages = {
+        item['category']: item['avg_level'] 
+        for item in Skill.get_category_averages()
+    }
+
+    grouped_skills = {}
+    for skill in skills:
+        if skill.category not in grouped_skills:
+            grouped_skills[skill.category] = {
+                'name': skill.category,
+                'skills': [],
+                'avg_level': category_averages.get(skill.category, 0)
+            }
+        grouped_skills[skill.category]['skills'].append(skill)
+    
+    skill_data_for_template = list(grouped_skills.values())
 
     # 프로젝트 조회 (최신 6개, 관련 이미지 prefetch)
     projects = Project.objects.select_related('company').prefetch_related('images').order_by('-start_date')[:6]
@@ -110,10 +127,9 @@ def get_portfolio_context() -> dict:
     return {
         'main_content': main_content,
         'profile': profile,
-        'skills': skills,
+        'skill_data': skill_data_for_template, # 새로 가공한 데이터를 전달
         'experiences': experiences,
         'educations': educations,
-        'skill_categories': skill_categories,
         'projects': projects,
         'total_experience_duration': total_experience_duration,
     }

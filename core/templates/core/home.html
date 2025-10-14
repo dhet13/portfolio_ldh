@@ -51,12 +51,21 @@
 <section id="skills" class="content-section">
     <h2 class="section-title">기술 스택</h2>
     <div class="skills-content">
-        {% regroup skills by category as skills_by_category %}
-        {% for category in skills_by_category %}
+        {% for category_data in skill_data %}
             <div class="category-group">
-                <h3 class="category-title">{{category.grouper }}</h3>
+                <div class="category-header">
+                    <h3 class="category-title">{{ category_data.name }}</h3>
+                    <div class="category-progress">
+                        <div class="skill-info">
+                            <span class="skill-score text-xs">평균: {{ category_data.avg_level|floatformat:1 }}/5</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: {% widthratio category_data.avg_level 5 100 %}%" ></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="skills-list">
-                    {% for skill in category.list %}        
+                    {% for skill in category_data.skills %}        
                     <div class="skill-item">
                         <span class="skill-name">{{ skill.name }}</span>
                         <div class="stars" style="--rating: {{ skill.level }};" aria-label="rating: {{ skill.level }} out of 5 stars">
