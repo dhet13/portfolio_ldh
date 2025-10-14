@@ -384,6 +384,7 @@
   @media (min-width: 1024px) {
     .photo-wrapper {
       grid-area: photo;
+      justify-content: flex-end;
     }
   }
 
@@ -642,12 +643,18 @@
         border-top: 1px solid hsl(var(--border));
         color: hsl(var(--foreground) / 0.85);
         line-height: 1.75;
-        font-size: 0.95rem;
+      }
+
+      .details-paragraph {
+        margin: 12px 0;
+        font-size: 1rem;
       }
 
       .item-details h5 {
         font-weight: 700;
+        font-size: 1rem;
         color: hsl(var(--foreground));
+        margin: 0;
       }
   .projects-grid {
     display: grid;
@@ -1076,7 +1083,7 @@
     background-color: hsl(var(--card));
     padding: 1rem;
     border-radius: 0.75rem;
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-align: left;
     border: 1px solid hsl(var(--border));
     color: hsl(var(--muted-foreground));
@@ -1084,6 +1091,10 @@
 
   .welcome-message p {
     margin: 0.25rem 0;
+  }
+
+  .welcome-message .example {
+    font-size: 0.75rem;
   }
 
   .question-counter {
