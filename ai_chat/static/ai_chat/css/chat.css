@@ -1,1 +1,10 @@
-﻿/* Styles migrated into Tailwind globals (styles/globals.css). */
+﻿/* AI Chat Message Text Formatting */
+.message {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.6;
+}
+
+.ai-message {
+    line-height: 1.7;
+}

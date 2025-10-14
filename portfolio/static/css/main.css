@@ -599,15 +599,19 @@ video {
 
 html {
   scroll-behavior: smooth;
+  background-color: #000000;
 }
 
 body {
-  background-color: hsl(var(--background));
+  background-color: #000000;
   color: hsl(var(--foreground));
   font-family: var(--font-sans, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
   line-height: 1.6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid #ffffff;
 }
 
 .container {

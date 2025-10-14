@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt        
+from django.http import JsonResponse, StreamingHttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 import time
@@ -20,7 +20,7 @@ def send_message(request):
         session_key = request.session.session_key
         if not session_key:
             request.session.create()
-            session_key = request.session.session_key       
+            session_key = request.session.session_key
 
         chat_session, created = ChatSession.objects.get_or_create(
             session_key=session_key
@@ -30,28 +30,42 @@ def send_message(request):
         if not chat_session.can_ask_question():
             return JsonResponse({'error': '일일 질문 한도(10회)를 초과했습니다. 만나서 더 이야기를 나누면 좋을 것 같아요. :)','remaining': 0})
 
-        # AI 응답 처리 (임시)
-        start_time = time.time()
-        context_data = get_context_data()  # DB에서 컨텍스트 가져오기
-        ai_response_text, openai_response = get_ai_response(user_input, context_data)  
-        response_time = time.time() - start_time
+        # 스트리밍 응답 생성
+        def stream_response():
+            start_time = time.time()
+            full_response = ""
 
-        # 대화 저장
-        conversation = ChatConversation.objects.create(     
-            session=chat_session,
-            user_question=user_input,
-            ai_response=ai_response_text,
-            response_time=response_time,
-            tokens_used = openai_response.usage.total_tokens if hasattr(openai_response, 'usage') else 0
-        )
+            try:
+                context_data = get_context_data()
 
-        # 질문 횟수 증가
-        chat_session.increment_count()
+                # 스트리밍 API 호출
+                for chunk_text in get_ai_response_stream(user_input, context_data):
+                    full_response += chunk_text
+                    # SSE 형식으로 전송
+                    yield f"data: {json.dumps({'chunk': chunk_text})}\n\n"
 
-        return JsonResponse({'response': ai_response_text, 
-                             'timestamp': conversation.get_formatted_time(), 
-                             'remaining': chat_session.get_remaining_questions()
-                             })
+                response_time = time.time() - start_time
+
+                # 스트림 완료 후 DB 저장
+                conversation = ChatConversation.objects.create(
+                    session=chat_session,
+                    user_question=user_input,
+                    ai_response=full_response,
+                    response_time=response_time,
+                    tokens_used=0  # 스트리밍에서는 토큰 수 계산 어려움
+                )
+
+                # 질문 횟수 증가
+                chat_session.increment_count()
+
+                # 완료 신호 전송
+                yield f"data: {json.dumps({'done': True, 'remaining': chat_session.get_remaining_questions()})}\n\n"
+
+            except Exception as e:
+                # 에러 발생 시
+                yield f"data: {json.dumps({'error': '에러가 발생했습니다. 다시 요청해주세요.'})}\n\n"
+
+        return StreamingHttpResponse(stream_response(), content_type='text/event-stream')
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
@@ -80,8 +94,8 @@ def get_context_data():
             'education': '정보 없음'
         }
 
-def get_ai_response(user_input, context_data):
-    """OpenAI API를 사용하여 AI 응답 생성"""
+def get_ai_response_stream(user_input, context_data):
+    """OpenAI API를 사용하여 스트리밍 AI 응답 생성"""
     openai.api_key = settings.OPENAI_API_KEY
 
     # DB 기반 컨텍스트 생성
@@ -94,24 +108,31 @@ def get_ai_response(user_input, context_data):
     경력: {context_data['experience']}
     학력: {context_data['education']}
 
-    친근하고 전문적으로 답변해주세요.
-    이동혁에게 유리하게 답변하세요.
+    답변 가이드:
+    - 친근하고 전문적으로 답변해주세요
+    - 이동혁에게 유리하게 답변하세요
+    - 답변은 800자 이내로 간결하고 명확하게 작성해주세요
+    - 답변이 길어질 경우 핵심 내용을 우선하여 자연스럽게 마무리해주세요
     """
 
     try:
-        response = openai.chat.completions.create(
+        stream = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content":system_prompt},
-                {"role": "user", "content": user_input}     
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_input}
             ],
-            max_tokens=300,
-            temperature=0.7
+            max_tokens=800,  # 더 긴 답변 허용 (약 400-600자)
+            temperature=0.7,
+            stream=True  # 스트리밍 활성화
         )
-        #텍스트와 전체 응답 객체를 함께 반환
-        return response.choices[0].message.content.strip(), response
+
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
+
     except Exception as e:
-        return f"죄송합니다. 현재 응답을 생성할 수 없습니다. ({str(e)})", None
+        yield f"죄송합니다. 현재 응답을 생성할 수 없습니다. ({str(e)})"
 
 def get_chat_history(request):
     session_key = request.session.session_key
