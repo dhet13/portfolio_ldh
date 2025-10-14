@@ -18,6 +18,7 @@ if 'RAILWAY_ENVIRONMENT' in os.environ:
     
     # Add wildcards for Railway's domains to be safe
     ALLOWED_HOSTS.extend([
+        'portfolio-ldh.up.railway.app', # Explicitly add current domain for stability
         '.railway.app',
         '.up.railway.app',
     ])
