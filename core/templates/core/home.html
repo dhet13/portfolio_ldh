@@ -20,16 +20,15 @@
           <div class="about-text">
               <div>{{ profile.introduce|convert_markdown }}</div>
           </div>
-          <div class="info-boxes">
                                 <div class="profile-box">
-                                    <h4 class="font-bold text-lg">프로필 정보</h4>
+                                    <h4 class="info-box-title">프로필 정보</h4>
                                     <p><strong class="font-bold">이름:</strong> {{ profile.name }}</p>
                                     <p><strong class="font-bold">영문명:</strong> {{ profile.english_name }}</p>
                                     <p><strong class="font-bold">생년월일:</strong> {{ profile.birth_date }}</p>
                                     <p><strong class="font-bold">이메일:</strong> {{ profile.email }}</p>
                                     <p><strong class="font-bold">연락처:</strong> {{ profile.phone }}</p>
                                 </div>              <div class="edu-box">
-                  <h4 class="font-bold text-lg">학력</h4>
+                  <h4 class="info-box-title">학력</h4>
                   {% for education in educations %}
                       <p><strong class="font-bold">학교:</strong> {{ education.school }}</p>
                       <p><strong class="font-bold">전공:</strong> {{ education.major }}</p>
@@ -37,7 +36,6 @@
                       <p>{{ education.start_date|date:"Y.m" }} ~ {{education.end_date|date:"Y.m"|default:"현재" }}</p>
                   {% endfor %}
               </div>
-          </div>
           {% if profile.photo %}
           <div class="photo-wrapper">
               <img src="{{ profile.photo.url }}" alt="프로필 사진" class="profile-photo">
