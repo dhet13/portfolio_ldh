@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql"]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql", "nodejs", "npm"]
 
 [phases.install]
 cmds = [
@@ -9,7 +9,11 @@ cmds = [
 ]
 
 [phases.build]
-cmds = [". /opt/venv/bin/activate && python manage.py collectstatic --no-input"]
+cmds = [
+    "cd theme/static_src && npm install",
+    "cd theme/static_src && npm run build",
+    ". /opt/venv/bin/activate && python manage.py collectstatic --no-input"
+]
 
 [variables]
 PATH = "/opt/venv/bin:$PATH"
