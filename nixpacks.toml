@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql", "nodejs"]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv", "postgresql", "nodejs", "bash"]
 
 [phases.install]
 cmds = [
