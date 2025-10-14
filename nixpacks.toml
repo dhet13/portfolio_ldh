@@ -10,7 +10,7 @@ cmds = [
 
 [phases.build]
 cmds = [
-    "cd theme/static_src && npm install",
+    "cd theme/static_src && npm install --ignore-scripts",
     "cd theme/static_src && npm run build",
     ". /opt/venv/bin/activate && python manage.py collectstatic --no-input"
 ]
