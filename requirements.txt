@@ -17,3 +17,8 @@ django-storages==1.14.2
 Pillow==10.3.0
 markdown==3.6
 python-dateutil==2.9.0
+
+# Code quality tools
+black==24.4.2
+isort==5.13.2
+flake8==7.0.0

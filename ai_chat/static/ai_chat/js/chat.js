@@ -57,7 +57,26 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({ message: messageText })
         })
         .then(response => {
-            const reader = response.body.getReader();
+            const contentType = response.headers.get('Content-Type') || '';
+
+            if (contentType.includes('application/json') && !contentType.includes('text/event-stream')) {
+                return response.json().then(data => {
+                    if (data.notice) {
+                        appendMessage(data.notice, 'ai-message', 'notice');
+                    } else if (data.error) {
+                        appendMessage(data.error, 'ai-message', 'error');
+                    }
+                    if (data.remaining !== undefined) {
+                        updateRemainingCount(data.remaining);
+                    }
+                });
+            }
+
+            const reader = response.body?.getReader();
+            if (!reader) {
+                appendMessage('실시간 응답을 지원하지 않는 브라우저입니다.', 'ai-message', 'error');
+                return;
+            }
             const decoder = new TextDecoder();
 
             function readStream() {
@@ -76,20 +95,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 const data = JSON.parse(jsonData);
 
                                 if (data.chunk) {
-                                    // 첫 청크가 왔을 때 메시지 div 추가 & 타이핑 시작
                                     if (isFirstChunk) {
                                         chatMessages.appendChild(aiMessageDiv);
-                                        startTyping(); // 타이핑 interval 시작
+                                        startTyping();
                                         isFirstChunk = false;
                                     }
-
-                                    // 버퍼에 텍스트 추가 (interval이 자동으로 처리)
                                     textBuffer += data.chunk;
 
                                 } else if (data.done) {
-                                    // 스트림 완료 - interval 정리
                                     if (typingInterval !== null) {
-                                        // 남은 버퍼가 모두 표시될 때까지 기다림
                                         const checkComplete = setInterval(() => {
                                             if (textBuffer.length === 0) {
                                                 clearInterval(typingInterval);
@@ -101,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     updateRemainingCount(data.remaining);
 
                                 } else if (data.error) {
-                                    // 에러 처리
                                     appendMessage(data.error, 'ai-message', 'error');
                                 }
                             } catch (e) {
@@ -115,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             readStream();
+
         })
         .catch(error => {
             console.error('Error:', error);

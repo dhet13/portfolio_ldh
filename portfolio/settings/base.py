@@ -160,7 +160,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'portfolio' / 'static'
+    BASE_DIR / 'static',  # 프로젝트 전역 공통 정적 파일
+    BASE_DIR / 'portfolio' / 'static',  # portfolio 앱 정적 파일
 ]
 
 # WhiteNoise 설정은 prod.py에서 설정됩니다

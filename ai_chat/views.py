@@ -31,7 +31,13 @@ def send_message(request):
 
         # 질문 횟수 확인
         if not chat_session.can_ask_question():
-            return JsonResponse({'error': '일일 질문 한도(10회)를 초과했습니다. 만나서 더 이야기를 나누면 좋을 것 같아요. :)','remaining': 0})
+            return JsonResponse(
+                {
+                    'notice': '일일 질문 한도(10회)를 초과했습니다. 만나서 더 이야기를 나누면 좋을 것 같아요. :)',
+                    'remaining': 0,
+                },
+                status=429,
+            )
 
         # 스트리밍 응답 생성
         def stream_response():
