@@ -13,6 +13,9 @@ import mimetypes
 import uuid
 from datetime import datetime
 from urllib.parse import urljoin, quote
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @deconstructible
@@ -82,10 +85,12 @@ class SupabaseStorage(Storage):
         한글 파일명은 자동으로 안전한 ASCII 파일명으로 변환됩니다.
         """
         try:
+            logger.info(f"Attempting to save file: {name}")
             storage = self._get_storage_client()
 
             # 한글 파일명을 안전한 파일명으로 변환
             safe_name = self._sanitize_filename(name)
+            logger.info(f"Sanitized filename: {safe_name}")
 
             # content가 InMemoryUploadedFile이나 TemporaryUploadedFile인 경우
             if hasattr(content, 'read'):
@@ -98,17 +103,28 @@ class SupabaseStorage(Storage):
             if not content_type:
                 content_type = 'application/octet-stream'
 
+            logger.info(f"File size: {len(file_data)} bytes, Content-Type: {content_type}")
+
+            # 파일이 이미 존재하는지 확인
+            if self.exists(safe_name):
+                logger.warning(f"File already exists, will overwrite: {safe_name}")
+                # 기존 파일 삭제
+                self.delete(safe_name)
+
             # Supabase Storage에 업로드 (변환된 파일명 사용)
-            storage.upload(
+            response = storage.upload(
                 path=safe_name,
                 file=file_data,
                 file_options={"content-type": content_type}
             )
 
+            logger.info(f"File uploaded successfully: {safe_name}")
+
             # 변환된 파일명 반환 (Django가 DB에 저장할 경로)
             return safe_name
 
         except Exception as e:
+            logger.error(f"File save failed: {name}. Error: {str(e)}", exc_info=True)
             raise IOError(f"파일 저장 실패: {name}. 에러: {str(e)}")
 
     def delete(self, name):
