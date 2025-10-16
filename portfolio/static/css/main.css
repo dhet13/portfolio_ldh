@@ -1228,8 +1228,18 @@ main.main-content {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: rgba(15, 23, 42, 0.3);
-  font-size: 2rem;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+}
+
+.placeholder-title {
+  line-height: 1.4;
+  word-break: keep-all;
+  color: #ffffff;
 }
 
 .project-info {

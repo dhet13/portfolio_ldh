@@ -13,12 +13,17 @@ document.addEventListener('DOMContentLoaded', function(){
     // 섹션들
     const imagesSection = document.getElementById('modal-images-section');
     const filesSection = document.getElementById('modal-files-section');
+    const readmeSection = document.getElementById('modal-readme-section');
 
     // 동적 콘텐츠 컨테이너
     const modalImages = document.getElementById('modal-images');
     const modalFiles = document.getElementById('modal-files');
+    const modalReadme = document.getElementById('modal-readme');
+    const githubLinkBtn = document.getElementById('github-link-btn');
+    const githubUrlText = document.getElementById('github-url-text');
     const iframeTabs = document.getElementById('iframe-tabs');
     const linksIframe = document.getElementById('modal-links-iframe');
+    const iframeError = document.getElementById('iframe-error');
     const openInNewTab = document.getElementById('open-in-new-tab');
 
     // 모달 열기 함수
@@ -57,7 +62,17 @@ document.addEventListener('DOMContentLoaded', function(){
     modalPeriod.textContent = data.period;
     modalDescription.innerHTML = data.description; // 마크다운 HTML 지원
 
-    // 1. 이미지 갤러리 처리 (data.images)
+    // 1. GitHub README 처리
+    if (data.readme_html && data.github_url) {
+        modalReadme.innerHTML = data.readme_html;
+        githubLinkBtn.href = data.github_url;
+        githubUrlText.textContent = data.github_url;
+        readmeSection.style.display = 'block';
+    } else {
+        readmeSection.style.display = 'none';
+    }
+
+    // 2. 이미지 갤러리 처리 (data.images)
     modalImages.innerHTML = ''; // 기존 내용 초기화
     if (data.images && data.images.length > 0) {
         data.images.forEach(img => {
@@ -71,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function(){
         imagesSection.style.display = 'none'; // 섹션 숨김
     }
 
-    // 2. 첨부 파일 처리 (data.files) - 미리보기 기능 포함
+    // 3. 첨부 파일 처리 (data.files) - 미리보기 기능 포함
     modalFiles.innerHTML = ''; //초기화
     if (data.files && data.files.length > 0) {
         data.files.forEach(file => {
@@ -110,32 +125,66 @@ document.addEventListener('DOMContentLoaded', function(){
         filesSection.style.display = 'none';
     }
 
-    // 3. 외부 링크 탭 처리 (Figma, GitHub, Demo)
+    // 4. 외부 링크 탭 처리 (Figma, GitHub, Demo)
     iframeTabs.innerHTML = ''; // 기존 탭 제거
     let isFirstTab = true;
+    let currentUrl = '';
 
-    const createTab = (url, text) => {
+    // iframe 에러 처리 함수
+    const handleIframeError = () => {
+        iframeError.style.display = 'block';
+        linksIframe.style.display = 'none';
+        openInNewTab.href = currentUrl;
+    };
+
+    const hideIframeError = () => {
+        iframeError.style.display = 'none';
+        linksIframe.style.display = 'block';
+    };
+
+    // iframe 에러 이벤트 리스너
+    linksIframe.addEventListener('error', handleIframeError);
+
+    const createTab = (url, text, iframeSupported) => {
         if (!url) return;
         const btn = document.createElement('button');
         btn.textContent = text;
         btn.classList.add('iframe-tab');
         if (isFirstTab) {
             btn.classList.add('active');
+            currentUrl = url;
             linksIframe.src = url;
+            openInNewTab.href = url;
+
+            // iframe이 지원되지 않으면 에러 메시지 표시
+            if (!iframeSupported) {
+                handleIframeError();
+            } else {
+                hideIframeError();
+            }
+
             isFirstTab = false;
         }
         btn.addEventListener('click', () => {
+            currentUrl = url;
             linksIframe.src = url;
+            openInNewTab.href = url;
             document.querySelectorAll('.iframe-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
+
+            // 탭 전환 시 iframe 지원 여부에 따라 처리
+            if (!iframeSupported) {
+                handleIframeError();
+            } else {
+                hideIframeError();
+            }
         });
         iframeTabs.appendChild(btn);
     };
 
-    createTab(data.figma_url, 'Figma');
-    createTab(data.github_url, 'GitHub');
-    createTab(data.demo_url, 'Demo');
-    
+    createTab(data.figma_url, 'Figma', true);
+    createTab(data.demo_url, 'Demo', data.iframe_supported);
+
     // 탭 유무에 따라 iframe 섹션 표시/숨김
     if (!isFirstTab) {
         document.getElementById('iframe-section').style.display = 'block';

@@ -16,6 +16,16 @@
                 <h3>프로젝트 설명</h3>
                 <div id="modal-description"></div>
             </div>
+            <div class="modal-section" id="modal-readme-section" style="display: none;">
+                <div class="section-header-with-link">
+                    <h3>GitHub README</h3>
+                    <a id="github-link-btn" href="" target="_blank" class="github-link-btn" rel="noopener noreferrer">
+                        <span class="github-icon">GitHub</span>
+                        <span id="github-url-text" class="github-url-text"></span>
+                    </a>
+                </div>
+                <div id="modal-readme" class="readme-content"></div>
+            </div>
             <div class="modal-section" id="modal-images-section" style="display: none;">
                 <h3>프로젝트 이미지</h3>
                 <div class="image-gallery" id="modal-images"></div>
@@ -24,6 +34,10 @@
                 <h3>외부 링크</h3>
                 <div class="iframe-tabs" id="iframe-tabs"></div>
                 <div class="iframe-wrapper">
+                    <div id="iframe-error" class="iframe-error" style="display: none;">
+                        <p>⚠️ 이 페이지는 임베드를 지원하지 않습니다.</p>
+                        <p>아래 버튼을 클릭하여 새 탭에서 열어주세요.</p>
+                    </div>
                     <iframe id="modal-links-iframe" src="" frameborder="0" title="프로젝트 링크 미리보기"></iframe>
                 </div>
                 <a id="open-in-new-tab" href="" target="_blank" class="open-new-tab-btn">

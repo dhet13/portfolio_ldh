@@ -10,7 +10,7 @@
                         <img src="{{ thumbnail.image.url }}" alt="{{ project.title }} 썸네일">
                     {% else %}
                         <div class="thumbnail-placeholder">
-                            <i class="fas fa-image"></i>
+                            <span class="placeholder-title">{{ project.title }}</span>
                         </div>
                     {% endif %}
                 {% endwith %}

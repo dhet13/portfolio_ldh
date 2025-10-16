@@ -6,6 +6,48 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import markdown
 from django.utils.safestring import mark_safe
+import requests
+import re
+import base64
+
+def fetch_github_readme(github_url):
+    """
+    GitHub URL에서 README 파일을 가져와 HTML로 변환
+    지원 형식: https://github.com/username/repo
+    """
+    if not github_url:
+        return None
+
+    # GitHub URL에서 owner/repo 추출
+    pattern = r'github\.com/([^/]+)/([^/]+)'
+    match = re.search(pattern, github_url)
+
+    if not match:
+        return None
+
+    owner, repo = match.groups()
+    # URL 끝의 .git 제거
+    repo = repo.replace('.git', '')
+
+    # GitHub API로 README 가져오기
+    api_url = f'https://api.github.com/repos/{owner}/{repo}/readme'
+
+    try:
+        response = requests.get(api_url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            # Base64 디코딩
+            readme_content = base64.b64decode(data['content']).decode('utf-8')
+            # Markdown을 HTML로 변환
+            readme_html = markdown.markdown(
+                readme_content,
+                extensions=['fenced_code', 'tables', 'nl2br', 'codehilite']
+            )
+            return readme_html
+    except Exception as e:
+        print(f"GitHub README fetch error: {e}")
+
+    return None
 
 # Create your views here.
 class ProjectListView(ListView):
@@ -60,15 +102,34 @@ def project_detail_json(request, pk):
         extensions=['fenced_code', 'tables', 'nl2br']
     ))
 
+    # GitHub README 가져오기
+    readme_html = None
+    if project.github_url:
+        readme_html = fetch_github_readme(project.github_url)
+
+    # Demo URL iframe 지원 여부 확인
+    iframe_supported = True
+    if project.demo_url:
+        try:
+            response = requests.head(project.demo_url, timeout=3)
+            x_frame_options = response.headers.get('X-Frame-Options', '').upper()
+            if x_frame_options in ['DENY', 'SAMEORIGIN']:
+                iframe_supported = False
+        except:
+            # 요청 실패시 일단 true로 (프론트에서 onerror로 처리)
+            iframe_supported = True
+
     #응답 데이터 구성
     data = {
         'title': project.title,
         'description': description_html,
-        'company': project.company.company,
+        'company': project.company.company if project.company else '개인/기타',
         'period': period,
         'demo_url': project.demo_url or '',
         'github_url': project.github_url or '',
         'figma_url': project.figma_url or '',
+        'readme_html': readme_html,
+        'iframe_supported': iframe_supported,
         'images': images,
         'files': files,
     }

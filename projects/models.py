@@ -10,16 +10,19 @@ class Project(models.Model):
         'core.Experience',
         on_delete=models.CASCADE,
         related_name='projects',
-        verbose_name="회사명",
+        verbose_name="소속 회사/기관",
+        blank=True,
+        null=True,
+        help_text="개인/기타 프로젝트는 비워두세요"
     )
 
     title = models.CharField(max_length=200, verbose_name="프로젝트명")
     description = models.TextField(verbose_name="프로젝트 설명")
     start_date = models.DateField(verbose_name="시작일")
     end_date = models.DateField(verbose_name="종료일", blank=True, null=True)
-    figma_url = models.URLField(max_length=500, blank=True, verbose_name="Figma URL")
-    github_url = models.URLField(max_length=500, blank=True, verbose_name="Github URL")
-    demo_url = models.URLField(max_length=500, blank=True, verbose_name="Demo URL")
+    figma_url = models.URLField(max_length=1000, blank=True, verbose_name="Figma URL")
+    github_url = models.URLField(max_length=1000, blank=True, verbose_name="Github URL")
+    demo_url = models.URLField(max_length=1000, blank=True, verbose_name="Demo URL")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
