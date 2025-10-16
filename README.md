@@ -1,21 +1,3 @@
-# ai 포트폴리오 사이트
-
-> **"채용 담당자가 5분 안에 제 역량을 파악할 수 있도록 설계했습니다"**
-
-📌 **핵심 기능:**
-- 프로젝트 히스토리 타임라인 (회사별 · 개인 프로젝트 구분)
-- GitHub README 자동 임포트 + 마크다운 렌더링
-- 우측 AI 어시스턴트 (경력 관련 실시간 Q&A)
-
-🛠 **기술 스택:** Django 5.0 · PostgreSQL · Tailwind CSS · OpenAI API
-🚀 **배포:** Railway (자동 배포 파이프라인)
-
----
-
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Django](https://img.shields.io/badge/Django-5.0.6-green)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1-06B6D4)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## 📋 목차
 
